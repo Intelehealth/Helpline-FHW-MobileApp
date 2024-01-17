@@ -1,0 +1,532 @@
+<resources>
+
+
+    <string-array name="language_names">
+        <item>Hindi</item>
+        <item>English</item>
+        <item>Marathi</item>
+<!--        <item>Cebuano</item>-->
+    </string-array>
+
+    <string-array name="language_values">
+        <item>hi</item>
+        <item>en</item>
+        <item>mr</item>
+<!--        <item>cb</item>-->
+    </string-array>
+
+    <string-array name="speciality_values">
+        <item>Select Specialization</item>
+        <item>General Physician</item>
+    </string-array>
+
+
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="state_error">
+        <item>Please select country first</item>
+    </string-array>
+    <string-array name="countries">
+        <item>Select Country</item>
+        <item>India</item>
+        <item>United States</item>
+        <item>Philippines</item>
+    </string-array>
+
+    <string-array name="education_or">
+        <item>ଶିକ୍ଷା ଚୟନ</item>
+        <item>ଅଶିକ୍ଷିତ</item>
+        <item>ମୌଳିକ ଶିକ୍ଷା</item>
+        <item>ମାଧ୍ୟମିକ ଶିକ୍ଷା</item>
+        <item>ଉଚ୍ଚ ମାଧ୍ୟମିକ ଶିକ୍ଷା</item>
+        <item>ସ୍ନାତକୋତର ଶିକ୍ଷା</item>
+    </string-array>
+
+    <string-array name="education_en">
+        <item>Select</item>
+        <item>Illiterate</item>
+        <item>Primary</item>
+        <item>Secondary</item>
+        <item>Higher Secondary</item>
+        <item>Graduation &amp; Higher</item>
+    </string-array>
+    <string-array name="education_cb">
+        <item>Select Education</item>
+        <item>Illiterate</item>
+        <item>Primary</item>
+        <item>Secondary</item>
+        <item>Higher Secondary</item>
+        <item>Graduation &amp; Higher</item>
+    </string-array>
+
+    <string-array name="education_hi">
+        <item> चयन करें</item>
+        <item>अशिक्षित</item>
+        <item>प्रथम</item>
+        <item>माध्यमिक</item>
+        <item>उच्च माध्यमिक</item>
+        <item>स्नातक और उच्चतर</item>
+    </string-array>
+
+    <string-array name="caste_en">
+        <item>Select</item>
+        <item>General</item>
+        <item>OBC</item>
+        <item>SC</item>
+        <item>ST</item>
+        <item>others</item>
+    </string-array>
+
+    <string-array name="caste_hi">
+        <item>चयन करें</item>
+        <item>सामान्य</item>
+        <item>अन्य पिछड़ा वर्ग</item>
+        <item>अनुसूचित जाति</item>
+        <item>अनुसूचित जनजाति</item>
+        <item>अन्य</item>
+    </string-array>
+
+    <string-array name="economic_en">
+        <item>Select</item>
+        <item>APL</item>
+        <item>BPL</item>
+    </string-array>
+
+    <string-array name="economic_or">
+        <item>ଚୟନ</item>
+        <item>APL</item>
+        <item>BPL</item>
+    </string-array>
+
+    <string-array name="economic_cb">
+        <item>Select</item>
+        <item>APL</item>
+        <item>BPL</item>
+    </string-array>
+
+    <string-array name="economic_hi">
+        <item>चयन करें</item>
+        <item>गरीबी रेखा से ऊपर</item>
+        <item>गरीबी रेखा से नीचे</item>
+    </string-array>
+
+    <string-array name="states_india">
+        <item>Select State</item>
+        <item>Andhra Pradesh</item>
+        <item>Arunachal Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chhattisgarh</item>
+        <item>Delhi</item>
+        <item>Goa</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Himachal Pradesh</item>
+        <item>Jammu &amp; Kashmir</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Manipur</item>
+        <item>Meghalaya</item>
+        <item>Mizoram</item>
+        <item>Nagaland</item>
+        <item>Odisha</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Sikkim</item>
+        <item>Tamil Nadu</item>
+        <item>Telangana</item>
+        <item>Tripura</item>
+        <item>Uttar Pradesh</item>
+        <item>Uttarakhand</item>
+        <item>West Bengal</item>
+    </string-array>
+
+    <string-array name="states_philippines">
+        <item>Select State</item>
+        <item>Bukidnon</item>
+    </string-array>
+    <string-array name="bukidnon_villages">
+        <item>Adtuyon-Pangantucan</item>
+        <item>Bacusanon-Pangantucan</item>
+        <item>Bangahan-Pangantucan</item>
+        <item>Barandias-Pangantucan</item>
+        <item>Concepcion-Pangantucan</item>
+        <item>Gandingan-Pangantucan</item>
+        <item>Kimanait-Pangantucan</item>
+        <item>Kipadukan-Pangantucan</item>
+        <item>Langcataon-Pangantucan</item>
+        <item>Lantay-Pangantucan</item>
+        <item>Madaya-Pangantucan</item>
+        <item>Malipayon-Pangantucan</item>
+        <item>Mendis-Pangantucan</item>
+        <item>Nabaliwa-Pangantucan</item>
+        <item>New Eden-Pangantucan</item>
+        <item>Payad-Pangantucan</item>
+        <item>Pigtauranan-Pangantucan</item>
+        <item>Poblacion-Pangantucan</item>
+        <item>Portulin-Pangantucan</item>
+        <item></item>
+
+    </string-array>
+
+    <string-array name="states_us">
+        <item>Select State</item>
+        <item>Alabama</item>
+        <item>Alaska</item>
+        <item>Arizona</item>
+        <item>Arkansas</item>
+        <item>California</item>
+        <item>Colorado</item>
+        <item>Connecticut</item>
+        <item>Delaware</item>
+        <item>Florida</item>
+        <item>Georgia</item>
+        <item>Hawaii</item>
+        <item>Idaho</item>
+        <item>Illinois</item>
+        <item>Indiana</item>
+        <item>Iowa</item>
+        <item>Kansas</item>
+        <item>Kentucky</item>
+        <item>Louisiana</item>
+        <item>Maine</item>
+        <item>Maryland</item>
+        <item>Massachusetts</item>
+        <item>Michigan</item>
+        <item>Minnesota</item>
+        <item>Mississippi</item>
+        <item>Missouri</item>
+        <item>Montana</item>
+        <item>Nebraska</item>
+        <item>Nevada</item>
+        <item>New Hampshire</item>
+        <item>New Jersey</item>
+        <item>New Mexico</item>
+        <item>New York</item>
+        <item>North Carolina</item>
+        <item>North Dakota</item>
+        <item>Ohio</item>
+        <item>Oklahoma</item>
+        <item>Oregon</item>
+        <item>Pennsylvania</item>
+        <item>Rhode Island</item>
+        <item>South Carolina</item>
+        <item>South Dakota</item>
+        <item>Tennessee</item>
+        <item>Texas</item>
+        <item>Utah</item>
+        <item>Vermont</item>
+        <item>Virginia</item>
+        <item>Washington</item>
+        <item>West Virginia</item>
+        <item>Wisconsin</item>
+        <item>Wyoming</item>
+    </string-array>
+
+    <string-array name="odisha_villages">
+        <item>Satygaon</item>
+        <item>Bhanjamunda</item>
+        <item>Baidehipur</item>
+        <item>Bhadramunda</item>
+        <item>Patamara</item>
+        <item>Ditikrushnapur</item>
+        <item>Pita Kulha Sahi</item>
+        <item>Kusumapal</item>
+        <item>Paunsia</item>
+        <item>Genjeimuni</item>
+        <item>Sagamanji Sahi</item>
+        <item>Bankhuli</item>
+        <item>Tandiberani</item>
+        <item>Nalasahi</item>
+        <item>Chanapala</item>
+        <item>Magarmuhan</item>
+        <item>Rangamatia</item>
+        <item>Suabasa</item>
+        <item>Kurumula</item>
+        <item>Ghenakani</item>
+        <item>Gopinnathpur</item>
+        <item>Kusubania</item>
+        <item>Hathimunda</item>
+        <item>Dhipasahi</item>
+        <item>Kuchinda</item>
+        <item>Chadakamara</item>
+        <item>Phuljhari</item>
+        <item>Khuntaposi</item>
+        <item>Jenapada</item>
+        <item>Monnakhul</item>
+        <item>Gopinathpur</item>
+        <item>Siarimalia Colony Sai</item>
+        <item>Siarimalia</item>
+        <item>Dangapala</item>
+        <item>Ditikrushnapur</item>
+        <item>Sanadhauragotha</item>
+        <item>Kunjam</item>
+        <item>Padang</item>
+        <item>Khulamunda</item>
+        <item>Priyambadapur</item>
+        <item>Jaganathpur</item>
+        <item>Roghunathpur</item>
+        <item>Muharmuhan</item>
+        <item>Saubasa</item>
+        <item>Bankuli</item>
+        <item>Sagamanghi Sai</item>
+        <item>Rengaromunda</item>
+        <item>Rangiapala</item>
+        <item>Benipathar</item>
+        <item>Debahali</item>
+        <item>Gentunali</item>
+        <item>Kakichanda(Munduribeda)</item>
+        <item>Dipasahi</item>
+        <item>Badasada</item>
+        <item>Kanteikali(Kanteigiri)</item>
+        <item>Purunapani</item>
+        <item>Fingamunda</item>
+        <item>Bijapani</item>
+        <item>Charakmunda</item>
+    </string-array>
+
+    <string-array name="units">
+        <item>per Hour</item>
+        <item>per Day</item>
+        <item>Per Week</item>
+        <item>per Month</item>
+        <item>per Year</item>
+    </string-array>
+
+    <string-array name="doctor_units">
+        <item>times per hour</item>
+        <item>time per day</item>
+        <item>times per week</item>
+        <item>times per month</item>
+        <item>times per year</item>
+    </string-array>
+
+    <string-array name="duration_units">
+        <item>Hours</item>
+        <item>Days</item>
+        <item>Weeks</item>
+        <item>Months</item>
+        <item>Years</item>
+    </string-array>
+
+    <array name="array_dot_active">
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen2</item>
+        <item>@color/dot_light_screen3</item>
+        <item>@color/dot_light_screen4</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen3</item>
+        <item>@color/dot_dark_screen4</item>
+    </array>
+
+    <string-array name="location_state">
+        <item>Select Location</item>
+    </string-array>
+
+    <string-array name="occupation_spinner_en">
+        <item>Select</item>
+        <item>Declined to answer</item>
+        <item>Government job</item>
+        <item>Large scale to medium scale industry</item>
+        <item>Professional job in private sector</item>
+        <item>Small scale industry</item>
+        <item>Big shop owner</item>
+        <item>Technician/craftsman</item>
+        <item>Small shop owner</item>
+        <item>Large scale farmer</item>
+        <item>Daily wage earner</item>
+        <item>Small scale farmer/farm worker</item>
+        <item>Unemployed</item>
+        <item>Housewife</item>
+        <item>Other skills (driver,mason etc)</item>
+        <item>[Describe]</item>
+    </string-array>
+
+<!--    Hindi Occupation-->
+    <string-array name="occupation_spinner_hi">
+        <item>चुनते हैं</item>
+        <item>जवाब देने के लिए मना कर दिया</item>
+        <item>सरकारी नौकरी</item>
+        <item>बड़ा या मध्यम उद्योग</item>
+        <item>निजी क्षेत्र में नौकरी</item>
+        <item>छोटा उद्योग</item>
+        <item>बड़ी दूकान के मालिक</item>
+        <item>तकनीशियन</item>
+        <item>छोटे दूकान का मालिक</item>
+        <item>बड़ा किसान</item>
+        <item>दैनिक मजदूर</item>
+        <item>छोटे किसान/ दुसरे के खेत में काम करने वाले</item>
+        <item>बेरोजगार</item>
+        <item>ग्रहिणी</item>
+        <item>अन्य कुशलता (ड्राईवर,राज मिस्त्री)</item>
+        <item>वर्णन करे</item>
+    </string-array>
+
+    <string-array name="bank_account_spinner_en">
+        <item>Select</item>
+        <item>Declined to answer</item>
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="bank_account_spinner_hi">
+        <item>चुनते हैं</item>
+        <item>जवाब देने के लिए मना कर दिया</item>
+        <item>हाँ</item>
+        <item>नहीं</item>
+    </string-array>
+
+    <string-array name="mobilephone_spinner_en">
+        <item>Select</item>
+        <item>Basic Phone</item>
+        <item>Smartphone</item>
+        <item>Does not own mobile phone</item>
+    </string-array>
+
+    <string-array name="mobilephone_spinner_hi">
+        <item>चुनते हैं</item>
+        <item>साधारण फोन</item>
+        <item>स्मार्टफोन</item>
+        <item>मोबाइल फोन नहीं है</item>
+    </string-array>
+
+    <string-array name="familymember_whatsapp_en">
+        <item>Select</item>
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="familymember_whatsapp_hi">
+        <item>चुनते हैं</item>
+        <item>हाँ</item>
+        <item>नहीं</item>
+    </string-array>
+
+
+    <string-array name="sourcewater_spinner_en">
+        <item>Select</item>
+        <item>Declined to answer</item>
+        <item>Chapakal/Hand Pump</item>
+        <item>Wells</item>
+        <item>Boring</item>
+        <item>Rivers/ponds</item>
+        <item>Tanker water</item>
+        <item>Any other</item>
+    </string-array>
+
+    <string-array name="sourcewater_spinner_hi">
+        <item>चुनते हैं</item>
+        <item>जवाब देने के लिए मना कर दिया</item>
+        <item>चापाकल/हैण्ड पंप</item>
+        <item>कुंवा</item>
+        <item>बोरिंग</item>
+        <item>नदी/तालाब</item>
+        <item>टैंकर का पानी</item>
+        <item>कोई और</item>
+    </string-array>
+
+    <string-array name="howtomake_water_safe_en">
+        <item>Select</item>
+        <item>Declined to answer</item>
+        <item>Nothing</item>
+        <item>Boil</item>
+        <item>Alum</item>
+        <item>Add Bleach/Chlorine tablets</item>
+        <item>Strain through cloth</item>
+        <item>Use water filter(ceramic/sand/composite)etc</item>
+        <item>Use electronic filter</item>
+        <item>Other[Enter]</item>
+    </string-array>
+
+    <string-array name="howtomake_water_safe_hi">
+        <item>चुनते हैं</item>
+        <item>जवाब देने के लिए मना कर दिया</item>
+        <item>कुछ भी नहीं</item>
+        <item>उबलना</item>
+        <item>अलम</item>
+        <item>ब्लीच / क्लोरीन गोलियाँ जोड़ें</item>
+        <item>कपड़े के माध्यम</item>
+        <item>पानी फिल्टर (सिरेमिक / रेत / समग्र) आदि का उपयोग करें</item>
+        <item>इलेक्ट्रॉनिक फ़िल्टर का उपयोग करें</item>
+        <item>अन्य [दर्ज करें]</item>
+    </string-array>
+
+    <string-array name="water_availability_spinner_en">
+        <item>Select</item>
+        <item>Declined to answer</item>
+        <item>Yes</item>
+        <item>No</item>
+        <item>Don\'t know</item>
+    </string-array>
+
+    <string-array name="water_availability_spinner_hi">
+        <item>चुनते हैं</item>
+        <item>जवाब देने के लिए मना कर दिया</item>
+        <item>हाँ</item>
+        <item>नहीं</item>
+        <item>पता नहीं</item>
+    </string-array>
+
+    <string-array name="toiletFacility_spinner_en">
+        <item>Select</item>
+        <item>Declined to answer</item>
+        <item>No facility /uses open space or field</item>
+        <item>Own toilet</item>
+        <item>Community toilet</item>
+        <item>Shared toilet with other household</item>
+        <item>Other [Enter]</item>
+    </string-array>
+
+    <string-array name="toiletFacility_spinner_hi">
+        <item>चुनते हैं</item>
+        <item>जवाब देने के लिए मना कर दिया</item>
+        <item>कोई सुविधा नहीं  / खुली जगह या क्षेत्र का उपयोग करते हैं</item>
+        <item>खुद का शौचालय</item>
+        <item>सामुदायिक शौचालय</item>
+        <item>अन्य घर के साथ साझा शौचालय</item>
+        <item>अन्य [दर्ज करें]</item>
+    </string-array>
+
+    <string-array name="structure_house_en">
+        <item>Select</item>
+        <item>Kutcha House</item>
+        <item>Pakka House</item>
+        <item>Homeless</item>
+    </string-array>
+
+    <string-array name="structure_house_hi">
+        <item>चुनते हैं</item>
+        <item>कच्चा घर</item>
+        <item>पक्का घर</item>
+        <item>घर नहीं है</item>
+    </string-array>
+
+    <string-array name="location_district">
+        <item>Select District</item>
+    </string-array>
+
+    <string-array name="location_sanch">
+        <item>Select Sanch</item>
+    </string-array>
+
+    <string-array name="location_village">
+        <item>Select Village</item>
+    </string-array>
+
+</resources>
