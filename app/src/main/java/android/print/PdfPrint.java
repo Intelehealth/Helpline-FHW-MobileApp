@@ -56,10 +56,13 @@ this.attributes = printAttributes;
     }
 
     private ParcelFileDescriptor getOutputFile(File path, String filename) {
+        Log.v(TAG, "path = "+path);
+        Log.v(TAG, "filename = "+filename);
         if (!path.exists()) {
             path.mkdirs();
         }
         File file = new File(path, filename);
+        if (file.exists()) file.delete();
         try {
             file.createNewFile();
             return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_WRITE);

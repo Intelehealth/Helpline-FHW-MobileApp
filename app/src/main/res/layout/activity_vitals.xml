@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -46,7 +47,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10sp"
                     app:cardElevation="3dp"
@@ -134,9 +134,11 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="19dp"
                     android:layout_marginBottom="10dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10sp"
@@ -180,6 +182,8 @@
                                         android:id="@+id/table_bpsys"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:focusableInTouchMode="true"
                                         android:fontFamily="@font/lato_regular"
                                         android:hint="@string/table_bpsys"
                                         android:imeOptions="actionUnspecified"
@@ -209,6 +213,8 @@
                                         android:id="@+id/table_bpdia"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:focusableInTouchMode="true"
                                         android:fontFamily="@font/lato_regular"
                                         android:hint="@string/table_bpdia"
                                         android:imeOptions="actionUnspecified"
@@ -225,6 +231,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
+                            android:id="@+id/tinput_spo"
                             android:layout_height="wrap_content">
 
                             <EditText
@@ -245,6 +252,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
+                            android:id="@+id/tinput_bpm"
                             android:layout_height="wrap_content">
 
                             <EditText
@@ -265,6 +273,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
+                            android:id="@+id/tinput_rr"
                             android:layout_height="wrap_content">
 
                             <EditText
@@ -285,6 +294,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
+                            android:id="@+id/tinput_c"
                             android:layout_height="wrap_content">
 
                             <EditText
@@ -306,6 +316,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
+                            android:id="@+id/tinput_f"
                             android:layout_height="wrap_content">
 
                             <EditText
@@ -324,12 +335,16 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
         </ScrollView>
+
+
     </RelativeLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

@@ -1,1 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
 include ':app'
+//include ':webrtc'
+include ':ihutils'
+include ':klivekit'
+include ':fcm'

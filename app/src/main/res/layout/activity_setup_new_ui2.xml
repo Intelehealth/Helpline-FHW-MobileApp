@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    tools:context=".activities.setupActivity.SetupActivityNew">
+
+    <ImageView
+        android:id="@+id/iv_back_arrow"
+        android:layout_width="@dimen/back_arrow_demo1_width"
+        android:layout_height="@dimen/back_arrow_demo1_height"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/back_arrow_demo1_width"
+        android:layout_marginTop="@dimen/back_arrow_demo1_width"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_setup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_back_arrow"
+        android:layout_marginStart="@dimen/tv_Setup_margin_start"
+        android:layout_marginTop="@dimen/tv_Setup_margin_top"
+
+        android:gravity="start"
+        android:text="@string/setup_new"
+        android:textColor="@color/textColorWhite"
+        android:textSize="@dimen/title_text_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_setup_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_setup"
+        android:layout_marginStart="@dimen/tv_setup_note_margin_start"
+        android:layout_marginTop="@dimen/tv_setup_note_margin_top"
+        android:gravity="start"
+        android:text="@string/one_time_setup"
+        android:textColor="@color/textColorWhite"
+        android:textSize="@dimen/common_hint_text_size" />
+
+    <ImageView
+        android:layout_width="@dimen/iv_setup_width"
+        android:layout_height="@dimen/iv_setup_height"
+        android:layout_below="@+id/iv_back_arrow"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/iv_setup_margin_top"
+        android:src="@drawable/ui2_ic_setup_screen_icon" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_setup_note"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/layout_setup_margin_top"
+        android:background="@drawable/top_rounded_whitebg"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/layout_setup_padding_start"
+        android:paddingTop="@dimen/layout_setup_padding_top"
+        android:paddingEnd="@dimen/layout_setup_padding_end"
+        android:paddingBottom="@dimen/layout_setup_padding_bottom">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/enterDetailsTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/enter_following_details"
+                        android:textColor="@color/textColorBlack"
+                        android:textSize="@dimen/common_header_text_size" />
+
+                    <ImageView
+                        android:id="@+id/setup_info_question_mark"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_toEndOf="@id/enterDetailsTV"
+                        android:src="@drawable/ui2_ic_info_question_mark" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    style="@style/TextviewInputTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tv_location_margin_top"
+                    android:text="@string/location_new"
+                    android:textColor="@color/textColorGray"
+                    android:textSize="@dimen/common_label_text_size" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/AutocompleteviewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_edittext_margin_top"
+                    app:endIconDrawable="@drawable/ui2_ic_new_chevron_down">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autotv_select_location"
+                        style="@style/AppTheme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input_fieldnew"
+                        android:cursorVisible="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/start_typing_location"
+                        android:importantForAutofill="no"
+                        android:inputType="none"
+                        android:maxLines="1"
+                        android:paddingStart="@dimen/common_edittext_padding_left"
+                        android:paddingTop="@dimen/common_edittext_padding_top"
+                        android:paddingEnd="@dimen/common_edittext_padding_right"
+                        android:paddingBottom="@dimen/common_edittext_padding_bottom"
+                        android:singleLine="true"
+                        android:textSize="@dimen/common_hint_text_size"
+                        app:endIconDrawable="@drawable/ui2_ic_chevron_down"
+                        app:endIconMode="custom"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_location_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/hamburger_margin_start"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/error_location_not_selected"
+                    android:textAppearance="@style/registr_error_msg"
+                    android:textColor="@color/red"
+                    android:textSize="13sp"
+                    android:visibility="visible" />
+
+                <TextView
+                    style="@style/TextviewInputTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_title_margin_top"
+                    android:text="@string/username"
+                    android:textColor="@color/textColorGray"
+                    android:textSize="@dimen/common_label_text_size" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_edittext_margin_top"
+                    app:boxStrokeWidth="0dp"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input_fieldnew"
+                        android:hint="@string/enter_username1"
+                        android:imeOptions="actionNext"
+                        android:maxLength="16"
+                        android:paddingStart="@dimen/common_edittext_padding_left"
+                        android:paddingTop="@dimen/common_edittext_padding_top"
+                        android:paddingEnd="@dimen/common_edittext_padding_right"
+                        android:paddingBottom="@dimen/common_edittext_padding_bottom"
+                        android:singleLine="true"
+                        android:textSize="@dimen/common_hint_text_size"
+
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_username_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/hamburger_margin_start"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/error_field_required"
+                    android:textAppearance="@style/registr_error_msg"
+                    android:textColor="@color/red"
+                    android:textSize="13sp"
+                    android:visibility="visible" />
+
+                <TextView
+                    style="@style/TextviewInputTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_title_margin_top"
+                    android:text="@string/password"
+                    android:textColor="@color/textColorGray"
+                    android:textSize="@dimen/common_label_text_size" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_edittext_margin_top"
+                    app:hintEnabled="false"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/iconTintGray">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input_fieldnew"
+                        android:hint="@string/enter_password1"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLength="16"
+                        android:paddingStart="@dimen/common_edittext_padding_left"
+                        android:paddingTop="@dimen/common_edittext_padding_top"
+                        android:paddingEnd="@dimen/common_edittext_padding_right"
+                        android:paddingBottom="@dimen/common_edittext_padding_bottom"
+                        android:singleLine="true"
+                        android:textSize="@dimen/common_hint_text_size" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_password_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/hamburger_margin_start"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/error_field_required"
+                    android:textAppearance="@style/registr_error_msg"
+                    android:textColor="@color/red"
+                    android:textSize="13sp"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_forgot_password1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16"
+                    android:gravity="end"
+                    android:text="@string/forgot_password_link"
+                    android:textColor="@color/textColorGray"
+                    android:textSize="@dimen/common_label_text_size" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="10sp"
+                    app:cardElevation="5sp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_bold"
+                            android:includeFontPadding="false"
+                            android:text="@string/choose_an_option_for_protocols"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                        <RadioButton
+                            android:id="@+id/demoMindmap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:fontFamily="@font/lato_regular"
+                            android:includeFontPadding="false"
+                            android:onClick="onRadioClick"
+                            android:text="@string/setup_use_demo_mindmap"
+                            android:textAppearance="@style/RobotoTextViewStyle"
+                            android:textSize="14sp" />
+
+
+                        <RadioButton
+                            android:id="@+id/downloadMindmap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_regular"
+                            android:includeFontPadding="false"
+                            android:onClick="onRadioClick"
+                            android:text="@string/setup_download_mindmap"
+                            android:textAppearance="@style/RobotoTextViewStyle"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/admin_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lato_regular"
+                        android:hint="@string/prompt_admin_password"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/layout_setup_padding_start"
+        android:layout_marginTop="@dimen/button_setup1_margin_top"
+        android:layout_marginEnd="@dimen/layout_setup_padding_end"
+        android:layout_marginBottom="@dimen/button_setup1_margin_bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvNoNetworkSetupScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginVertical="@dimen/hamburger_margin_start"
+            android:lineSpacingExtra="0sp"
+            android:text="@string/setup_internet_not_available"
+            android:textAppearance="@style/registr_error_msg"
+            android:textColor="@color/red"
+            android:textSize="13sp"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_setup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ui2_common_primary_bg"
+            android:drawableEnd="@drawable/ui2_ic_baseline_arrow_forward_24"
+            android:drawableTint="@color/iconTintWhite"
+            android:paddingStart="@dimen/common_button_padding_left"
+            android:paddingTop="@dimen/common_button_padding_top"
+            android:paddingEnd="@dimen/common_button_padding_right"
+            android:paddingBottom="@dimen/common_button_padding_bottom"
+            android:text="@string/setup"
+            android:textSize="@dimen/common_button_text_size" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/margin_8"
+    android:layout_marginTop="@dimen/margin_8"
+    android:layout_marginBottom="@dimen/margin_8"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <ImageView
+            android:id="@+id/blt_view"
+            android:layout_width="10dip"
+            android:layout_height="10dip"
+            android:layout_marginEnd="@dimen/margin_8"
+            android:src="@drawable/ic_baseline_lens_24" />
+
+        <TextView
+            android:id="@+id/tv_question_label"
+            style="@style/label_misc_txt_14sp_dark_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="1sp"
+            android:paddingEnd="@dimen/margin_8"
+            android:text="@string/question" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_answer_value"
+        style="@style/label_misc_txt_14sp_dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dip"
+        android:lineSpacingExtra="1sp"
+        android:text="@string/answer_information" />
+
+</LinearLayout>
