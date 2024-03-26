@@ -8,6 +8,18 @@
             android:id="@+id/menu_my_achievements"
             android:icon="@drawable/ui2_ic_my_achievements"
             android:title="@string/my_achievements" />
+
+        <item
+            android:id="@+id/menu_missed_calls"
+            android:icon="@drawable/ui2_ic_icon_nav_missed_call"
+            android:title="@string/missed_calls"
+            />
+        <item
+            android:id="@+id/menu_call_recordings"
+            android:icon="@drawable/ui2_ic_icon_call_recordings"
+            android:title="@string/call_recordings"
+            />
+
         <item android:visible="false"
             android:id="@+id/menu_video_lib"
             android:icon="@drawable/ui2_ic_icon_video_library"

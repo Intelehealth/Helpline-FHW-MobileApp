@@ -400,4 +400,29 @@ public class ProviderDAO {
             return "Test Doctor";
 
     }
+
+    public String getLoggedInUserPhoneNumber(String uuid) throws DAOException {
+        SQLiteDatabase db = IntelehealthApplication.inteleHealthDatabaseHelper.getWritableDatabase();
+        String phoneNumber ="";
+        db.beginTransaction();
+        try {
+            String query = "select telephoneNumber from tbl_provider where uuid = ?";
+            Cursor cursor = db.rawQuery(query, new String[]{uuid});
+            if (cursor.getCount() != 0) {
+                while (cursor.moveToNext()) {
+                    phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("telephoneNumber"));
+                }
+            }
+            cursor.close();
+            db.setTransactionSuccessful();
+        } catch (SQLException s) {
+            FirebaseCrashlytics.getInstance().recordException(s);
+            throw new DAOException(s);
+        } finally {
+            db.endTransaction();
+
+        }
+        return phoneNumber;
+
+    }
 }

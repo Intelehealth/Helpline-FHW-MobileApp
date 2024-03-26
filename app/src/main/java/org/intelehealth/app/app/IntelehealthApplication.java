@@ -91,7 +91,6 @@ public class IntelehealthApplication extends MultiDexApplication implements Defa
         androidId = String
                 .format("%16s", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID))
                 .replace(' ', '0');
-
 //        String url = BuildConfig.SERVER_URL;
 //        if (url == null) {
 //            Log.i(TAG, "onCreate: Parse not init");

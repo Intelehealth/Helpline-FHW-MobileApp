@@ -49,6 +49,43 @@
         tools:ignore="UnusedAttribute, LockedOrientationActivity"
         tools:replace="allowBackup">
         <activity
+            android:name=".activities.callflow.MissedCallActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.callflow.CallRecordingsActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.callflow.PlayAudioActivityTemp"
+            android:exported="true">
+
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        <activity
+            android:name=".activities.callflow.BaseActionBarActivity"
+            android:exported="false" />
+        <!--
+         <activity
+            android:name=".activities.PlayAudioActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
+
+        <activity
             android:name=".profile.MyProfileActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
@@ -259,25 +296,19 @@
             android:name=".activities.forgotPasswordNew.ForgotPasswordOtpVerificationActivity_New"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-
-
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.forgotPasswordNew.ForgotPasswordActivity_New"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-
-        <!--        <receiver-->
-        <!--            android:name=".services.firebase_services.RTCMessageReceiver"-->
-        <!--            android:enabled="true"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="org.intelehealth.app.RTC_MESSAGING_EVENT" />-->
-        <!--            </intent-filter>-->
-        <!--        </receiver>-->
-
+            android:windowSoftInputMode="adjustPan" /> <!-- <receiver -->
+        <!-- android:name=".services.firebase_services.RTCMessageReceiver" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="org.intelehealth.app.RTC_MESSAGING_EVENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <receiver
             android:name=".services.CameraOpenRequestReceiver"
             android:enabled="true"
@@ -330,13 +361,21 @@
             android:name=".activities.setupActivity.SetupActivityNew"
             android:exported="true"
             android:theme="@style/AppThemeMaterialNew"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
         <activity
             android:name=".activities.onboarding.SetupPrivacyNoteActivity_New"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <!-- <service -->
+            android:windowSoftInputMode="adjustPan" /> <!-- <service -->
         <!-- android:name=".services.OnClearFromRecentService" -->
         <!-- android:stopWithTask="false" /> -->
         <activity
@@ -353,7 +392,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".webrtc.activity.IDAChatActivity"
             android:exported="true"
@@ -430,11 +468,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" /> <!-- Firebase Realdb -->
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_launcher" />

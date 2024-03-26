@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="@dimen/screen_container_padding"
+    android:padding="@dimen/screen_padding"
+    tools:context=".activities.callflow.MissedCallActivity">
+
+    <include
+        android:id="@+id/toolbar_missed_call"
+        layout="@layout/toolbar_common_new2_ui2"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="@dimen/screen_container_padding"
+        android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_missed_calls"
+        android:layout_marginHorizontal="@dimen/screen_container_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/iv_row_call_icons"
+        android:layout_marginBottom="@dimen/screen_padding"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="3"
+        tools:listitem="@layout/row_item_missed_call_layout" />
+
+</LinearLayout>

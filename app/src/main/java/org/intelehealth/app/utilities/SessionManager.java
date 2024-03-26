@@ -65,6 +65,7 @@ public class SessionManager {
 
     private static final String ACTIVITY_RESULT_APPOINTMENT = "ACTIVITY_RESULT_APPOINTMENT";
 
+    private static final String LOGGED_IN_HW_MOBILE_NUMBER = "loggedInHWMobileNo";
 
     // LogCat tag
     private static String TAG = SessionManager.class.getSimpleName();
@@ -552,6 +553,15 @@ public class SessionManager {
 
     public void setAppointmentResult(Boolean appointmentResult) {
         editor.putBoolean(ACTIVITY_RESULT_APPOINTMENT, appointmentResult);
+        editor.commit();
+    }
+
+    public String getLoginHWMobileNumber() {
+        return pref.getString(LOGGED_IN_HW_MOBILE_NUMBER, "");
+    }
+
+    public void setLoginHWMobileNumber(String mobileNo) {
+        editor.putString(LOGGED_IN_HW_MOBILE_NUMBER, mobileNo);
         editor.commit();
     }
 }

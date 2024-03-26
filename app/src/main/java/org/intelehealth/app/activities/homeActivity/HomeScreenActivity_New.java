@@ -54,9 +54,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
-import androidx.activity.OnBackPressedDispatcherOwner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -84,6 +81,8 @@ import org.intelehealth.app.BuildConfig;
 import org.intelehealth.app.R;
 import org.intelehealth.app.activities.aboutus.AboutUsActivity;
 import org.intelehealth.app.activities.achievements.fragments.MyAchievementsFragment;
+import org.intelehealth.app.activities.callflow.CallRecordingsActivity;
+import org.intelehealth.app.activities.callflow.MissedCallActivity;
 import org.intelehealth.app.activities.help.activities.HelpFragment_New;
 import org.intelehealth.app.activities.informativeVideos.fragments.InformativeVideosFragment_New;
 import org.intelehealth.app.activities.loginActivity.LoginActivityNew;
@@ -590,7 +589,7 @@ public class HomeScreenActivity_New extends BaseActivity implements NetworkUtils
 
             SyncDAO.getSyncProgress_LiveData().observe(this, syncLiveData);
             showRefreshInProgressDialog();
-            Executors.newSingleThreadExecutor().execute(() -> syncUtils.initialSync("home",this));
+            Executors.newSingleThreadExecutor().execute(() -> syncUtils.initialSync("home", this));
         } else {
             // if initial setup done then we can directly set the periodic background sync job
             WorkManager.getInstance().enqueueUniquePeriodicWork(AppConstants.UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, AppConstants.PERIODIC_WORK_REQUEST);
@@ -916,8 +915,13 @@ public class HomeScreenActivity_New extends BaseActivity implements NetworkUtils
             startActivity(i);
         } else if (itemId == R.id.menu_logout) {
             wantToLogoutFromApp(this, getResources().getString(R.string.menu_option_logout), getResources().getString(R.string.sure_to_logout), getResources().getString(R.string.yes), getResources().getString(R.string.no));
+        } else if (itemId == R.id.menu_missed_calls) {
+            Intent i = new Intent(HomeScreenActivity_New.this, MissedCallActivity.class);
+            startActivity(i);
+        } else if (itemId == R.id.menu_call_recordings) {
+            Intent i = new Intent(HomeScreenActivity_New.this, CallRecordingsActivity.class);
+            startActivity(i);
         }
-
         mDrawerLayout.closeDrawers();
 
         if (fragment != null) {

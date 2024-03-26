@@ -1,8 +1,9 @@
 package org.intelehealth.app.networkApiCalls;
 
 
-import com.google.gson.JsonObject;
-
+import org.intelehealth.app.activities.callflow.models.CallFlowResponse;
+import org.intelehealth.app.activities.callflow.models.CallFlowResponseModelClass;
+import org.intelehealth.app.activities.callflow.models.MissedCallsResponseModel;
 import org.intelehealth.app.models.ChangePasswordModel_New;
 import org.intelehealth.app.models.ChangePasswordParamsModel_New;
 import org.intelehealth.app.models.CheckAppUpdateRes;
@@ -15,6 +16,7 @@ import org.intelehealth.app.models.ObsImageModel.ObsPushDTO;
 import org.intelehealth.app.models.RequestOTPParamsModel_New;
 import org.intelehealth.app.models.ResetPasswordResModel_New;
 import org.intelehealth.app.models.Results;
+import org.intelehealth.app.models.callflow.CallFlowRequestParamsModel;
 import org.intelehealth.app.models.dto.ResponseDTO;
 import org.intelehealth.app.models.hwprofile.Profile;
 import org.intelehealth.app.models.hwprofile.ProfileCreateAttribute;
@@ -34,7 +36,6 @@ import org.intelehealth.app.models.statewise_location.District_Sanch_Village;
 import org.intelehealth.app.models.statewise_location.State;
 import org.intelehealth.app.utilities.authJWT_API.AuthJWTBody;
 import org.intelehealth.app.utilities.authJWT_API.AuthJWTResponse;
-import org.json.JSONObject;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -206,4 +207,17 @@ public interface ApiInterface {
             @Url String url,
             @Body AuthJWTBody authJWTBody
     );
+
+    @POST("/api/mindmap/startCall")
+    Observable<CallFlowResponse> initiateCallFlow(@Body CallFlowRequestParamsModel callFlowRequestParamsModel);
+
+
+    @GET
+    Observable<CallFlowResponseModelClass> getCallRecordings(@Url String url,
+                                                             @Header("Authorization") String authHeader);
+
+    @GET
+    Observable<MissedCallsResponseModel> getMissedCalls(@Url String url,
+                                                        @Header("Authorization") String authHeader);
+
 }

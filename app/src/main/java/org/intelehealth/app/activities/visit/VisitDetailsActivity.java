@@ -52,6 +52,7 @@ import com.google.gson.Gson;
 
 import org.intelehealth.app.BuildConfig;
 import org.intelehealth.app.R;
+import org.intelehealth.app.activities.callflow.utils.InitiateHWToPatientCallFlow;
 import org.intelehealth.app.activities.identificationActivity.IdentificationActivity_New;
 import org.intelehealth.app.activities.visit.adapter.PastVisitListingAdapter;
 import org.intelehealth.app.activities.visit.model.PastVisitData;
@@ -202,7 +203,8 @@ public class VisitDetailsActivity extends BaseActivity implements NetworkUtils.I
 
         // calling and whatsapp - start
         pat_call_btn.setOnClickListener(v -> {
-            calling_feature(pat_phoneno);
+            callHelpline();
+            // calling_feature(pat_phoneno);
         });
 
         pat_whatsapp_btn.setOnClickListener(v -> {
@@ -839,7 +841,9 @@ public class VisitDetailsActivity extends BaseActivity implements NetworkUtils.I
                                 String.format("https://api.whatsapp.com/send?phone=%s&text=%s",
                                         phoneno, getResources().getString(R.string.nurse_whatsapp_message, nurseName)))));
             } else {
-                Toast.makeText(VisitDetailsActivity.this, getResources().getString(R.string.mobile_no_not_provided), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Mobile number is not registered", Toast.LENGTH_LONG).show();
+
+                // Toast.makeText(VisitDetailsActivity.this, getResources().getString(R.string.mobile_no_not_provided), Toast.LENGTH_SHORT).show();
             }
         } catch (DAOException e) {
             throw new RuntimeException(e);
@@ -1082,4 +1086,14 @@ public class VisitDetailsActivity extends BaseActivity implements NetworkUtils.I
 
         new AppointmentUtils().cancelAppointmentRequestOnVisitEnd(visitUUID, appointmentID, reason, providerID, baseurl);
     }
+
+    private void callHelpline() {
+        if (NetworkConnection.isOnline(context)) {
+            InitiateHWToPatientCallFlow initiateHWToPatientCallFlow = new InitiateHWToPatientCallFlow();
+            initiateHWToPatientCallFlow.initiateCallFlowFromHwToPatient(pat_phoneno, VisitDetailsActivity.this, patientUuid);
+        } else {
+            Toast.makeText(context, getResources().getString(R.string.no_network), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

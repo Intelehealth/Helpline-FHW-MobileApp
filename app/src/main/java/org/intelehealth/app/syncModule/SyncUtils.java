@@ -49,6 +49,7 @@ public class SyncUtils {
         syncDAO.pushDataApi();
         syncDAO.pullData_Background(IntelehealthApplication.getAppContext(),0); //only this new function duplicate
         imagesPushDAO.loggedInUserProfileImagesPush();
+        syncDAO.fetchHWMobileNumber(IntelehealthApplication.getAppContext());
         /*
          * Looper.getMainLooper is used in background sync since the sync_background()
          * is called from the syncWorkManager.java class which executes the sync on the
@@ -87,6 +88,7 @@ public class SyncUtils {
         ImagesPushDAO imagesPushDAO = new ImagesPushDAO();
         Logger.logD(TAG, "Push Started");
         isSynced = syncDAO.pushDataApi();
+        syncDAO.fetchHWMobileNumber(IntelehealthApplication.getAppContext());
         Logger.logD(TAG, "Push ended");
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

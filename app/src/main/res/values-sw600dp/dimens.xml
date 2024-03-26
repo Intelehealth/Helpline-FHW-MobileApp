@@ -915,6 +915,12 @@
     <dimen name="tv_cal_view_date_day_margin_top">10dp</dimen>
     <dimen name="tv_cal_view_date_day_text_size">16sp</dimen>
     <dimen name="icons_appoint_height">60dp</dimen>
-
+    <dimen name="iv_call_icons_size">44dp</dimen>
+    <dimen name="list_container_padding">@dimen/std_8dp</dimen>
+    <dimen name="screen_container_padding">20dp</dimen>
+    <dimen name="screen_padding">50dp</dimen>
+    <dimen name="iv_row_call_icons">44dp</dimen>
+    <dimen name="list_row_items_margin">16dp</dimen>
+    <dimen name="margin_start_call_info">50dp</dimen>
 
 </resources>

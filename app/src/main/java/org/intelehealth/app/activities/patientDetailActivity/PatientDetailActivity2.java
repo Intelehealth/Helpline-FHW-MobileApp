@@ -1,5 +1,6 @@
 package org.intelehealth.app.activities.patientDetailActivity;
 
+import static org.intelehealth.app.database.dao.PatientsDAO.phoneNumber;
 import static org.intelehealth.app.utilities.DialogUtils.patientRegistrationDialog;
 import static org.intelehealth.app.utilities.StringUtils.en__as_dob;
 import static org.intelehealth.app.utilities.StringUtils.en__bn_dob;
@@ -58,6 +59,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
@@ -68,6 +70,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -87,6 +90,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
 
 import org.intelehealth.app.R;
+import org.intelehealth.app.activities.callflow.utils.InitiateHWToPatientCallFlow;
 import org.intelehealth.app.activities.homeActivity.HomeScreenActivity_New;
 import org.intelehealth.app.activities.identificationActivity.IdentificationActivity_New;
 import org.intelehealth.app.activities.identificationActivity.model.DistData;
@@ -103,10 +107,12 @@ import org.intelehealth.app.database.InteleHealthDatabaseHelper;
 import org.intelehealth.app.database.dao.EncounterDAO;
 import org.intelehealth.app.database.dao.ImagesDAO;
 import org.intelehealth.app.database.dao.PatientsDAO;
+import org.intelehealth.app.database.dao.ProviderDAO;
 import org.intelehealth.app.database.dao.VisitsDAO;
 import org.intelehealth.app.knowledgeEngine.Node;
 import org.intelehealth.app.models.dto.EncounterDTO;
 import org.intelehealth.app.models.dto.PatientDTO;
+import org.intelehealth.app.models.dto.ProviderDTO;
 import org.intelehealth.app.models.dto.VisitDTO;
 import org.intelehealth.app.shared.BaseActivity;
 import org.intelehealth.app.syncModule.SyncUtils;
@@ -181,6 +187,7 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
     private NetworkUtils networkUtils;
     String tag = "";
     private TableRow trAddress2;
+    private String patientPhone = "";
 
     @Override
     public void onBackPressed() {
@@ -539,9 +546,49 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
         mPastVisitsRecyclerView = findViewById(R.id.rcv_past_visits);
         mPastVisitsRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
+        ibCall = findViewById(R.id.ib_call_btn_patient);
+        ibWhatsapp = findViewById(R.id.ib_whatsapp_btn_patient);
+        try {
+            patientPhone = StringUtils.mobileNumberEmpty(phoneNumber(patientDTO.getUuid()));
+            if (patientPhone.equalsIgnoreCase("N/A"))
+                patientPhone = "";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+
+        ibCall.setOnClickListener(v -> {
+            callHelpline();
+            // callingFeature(patientPhone);
+
+
+        });
+        ibWhatsapp.setOnClickListener(v -> {
+            whatsappFeature(patientPhone);
+        });
         setFullName();
         initForOpenVisit();
         initForPastVisit();
+    }
+
+    private void callHelpline() {
+        if (NetworkConnection.isOnline(context)) {
+            InitiateHWToPatientCallFlow initiateHWToPatientCallFlow = new InitiateHWToPatientCallFlow();
+            initiateHWToPatientCallFlow.initiateCallFlowFromHwToPatient(patientPhone, PatientDetailActivity2.this, patientDTO.getUuid());
+        } else {
+            MaterialAlertDialogBuilder builder = new DialogUtils().showErrorDialogWithTryAgainButton(this, getDrawable(R.drawable.ui2_icon_logging_in), getString(R.string.network_failure), getString(R.string.call_log_no_internet), getString(R.string.try_again));
+            AlertDialog networkFailureDialog = builder.show();
+
+            networkFailureDialog.getWindow().setBackgroundDrawableResource(R.drawable.ui2_rounded_corners_dialog_bg); // show rounded corner for the dialog
+            networkFailureDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);   // dim backgroun
+            int width = PatientDetailActivity2.this.getResources().getDimensionPixelSize(R.dimen.internet_dialog_width);    // set width to your dialog.
+            networkFailureDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
+
+            Button tryAgainButton = networkFailureDialog.findViewById(R.id.positive_btn);
+            if (tryAgainButton != null) tryAgainButton.setOnClickListener(v1 -> {
+                networkFailureDialog.dismiss();
+                callHelpline();
+            });
+        }
     }
 
     private RecyclerView mPastVisitsRecyclerView;
@@ -549,6 +596,7 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
 
     private RecyclerView mCurrentVisitsRecyclerView;
     private List<PastVisitData> mCurrentVisitDataList = new ArrayList<PastVisitData>();
+    private ImageButton ibCall, ibWhatsapp;
 
     private void initForOpenVisit() {
         if (patientDTO == null || patientDTO.getUuid() == null) {
@@ -1931,6 +1979,25 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
                 findViewById(R.id.cv_past_visits).setVisibility(View.GONE);
             }
         }
+    }
+
+    private void whatsappFeature(String phoneno) {
+        try {
+            String nurseName = new ProviderDAO().getProviderName(sessionManager.getProviderID(), ProviderDTO.Columns.PROVIDER_UUID.value);
+            if (phoneno != null && !phoneno.equalsIgnoreCase("")) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(
+                                String.format("https://api.whatsapp.com/send?phone=%s&text=%s",
+                                        phoneno, getResources().getString(R.string.nurse_whatsapp_message, nurseName)))));
+            } else {
+                Toast.makeText(context, "Mobile number is not registered", Toast.LENGTH_LONG).show();
+
+                // Toast.makeText(PatientDetailActivity2.this, getResources().getString(R.string.mobile_no_not_provided), Toast.LENGTH_SHORT).show();
+            }
+        } catch (DAOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

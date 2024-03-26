@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name" translatable="false">Intelehealth</string>
-    <string name="notification_title">Intelehealth</string>
+    <string name="app_name" translatable="false">Intelehealth Helpline</string>
+    <string name="notification_title">Intelehealth Helpline</string>
     <string name="notification_title_1">Application is active!</string>
     //Generic
     <string name="generic_the_flipping_word_next">Next</string>
@@ -1878,4 +1878,14 @@ The disclosure of personal information to third parties shall be only for identi
     <string name="otp_sending">OTP Sending...</string>
     <string name="token_expired">Token Expired</string>
     <string name="your_session_has_expired_please_log_in_again">Your session has expired. Please log in again.</string>
+    <string name="missed_calls">Missed Calls</string>
+    <string name="call_recordings">Call Recordings</string>
+    <string name="failed_to_connect">Failed to connect</string>
+    <string name="call_log_no_internet">Call functionality requires a strong internet connection. You are not connected to internet, please try again later.</string>
+    <string name="please_wait_for_call">Call initiated, Please wait</string>
+    <string name="mobile_no_not_registered">Mobile number is not registered</string>
+    <string name="call_initiated">Call initiated</string>
+    <string name="try_later">Failed to connect, Please try later</string>
+
+
 </resources>

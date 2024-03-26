@@ -200,6 +200,14 @@ public class AppConstants {
     //status of appointment
     public static final String CANCELLED = "cancelled";
     public static final String BOOKED = "booked";
+    public static final String UTC_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    public static final String DISPLAY_FORMAT = "dd MMM, yyyy hh:mm a";
+    public static final String PORT_NUMBER = "3004";
+    public static final String AUTH_HEADER_CALL_FLOW = "Basic bnVyc2U6TnVyc2VAMTIz";
+
+    public static final String DISPLAY_FORMAT_CALL = "dd MMMM, 'at' hh:mm a";
+
 
 }
 

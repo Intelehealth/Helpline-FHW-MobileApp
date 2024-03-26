@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.ajalt.timberkt.Timber;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
 
@@ -18,8 +19,11 @@ import org.intelehealth.app.app.IntelehealthApplication;
 import org.intelehealth.app.appointment.dao.AppointmentDAO;
 import org.intelehealth.app.database.InteleHealthDatabaseHelper;
 import org.intelehealth.app.models.ActivePatientModel;
+import org.intelehealth.app.models.dto.ProviderDTO;
 import org.intelehealth.app.models.dto.ResponseDTO;
 import org.intelehealth.app.models.dto.VisitDTO;
+import org.intelehealth.app.models.hwprofile.PersonAttributes;
+import org.intelehealth.app.models.hwprofile.Profile;
 import org.intelehealth.app.models.pushRequestApiCall.PushRequestApiCall;
 import org.intelehealth.app.models.pushResponseApiCall.PushResponseApiCall;
 import org.intelehealth.app.services.InitialSyncIntentService;
@@ -28,6 +32,7 @@ import org.intelehealth.app.utilities.Logger;
 import org.intelehealth.app.utilities.NotificationID;
 import org.intelehealth.app.utilities.PatientsFrameJson;
 import org.intelehealth.app.utilities.SessionManager;
+import org.intelehealth.app.utilities.UrlModifiers;
 import org.intelehealth.app.utilities.exception.DAOException;
 
 import java.text.ParsePosition;
@@ -37,8 +42,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -113,8 +120,9 @@ public class SyncDAO {
         String encoded = sessionManager.getEncoded();
         String oldDate = sessionManager.getPullExcutedTime();
         String url = BuildConfig.SERVER_URL + "/EMR-Middleware/webapi/pull/pulldata/" +
-                sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime()+
-                "/" + pageNo + "/" + AppConstants.PAGE_LIMIT;;
+                sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime() +
+                "/" + pageNo + "/" + AppConstants.PAGE_LIMIT;
+        ;
 //        String url =  sessionManager.getServerUrl() + "/pulldata/" + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime();
         Call<ResponseDTO> middleWarePullResponseCall = AppConstants.apiInterface.RESPONSE_DTO_CALL(url, "Basic " + encoded);
         Logger.logD("Start pull request", "Started");
@@ -142,7 +150,7 @@ public class SyncDAO {
                         if (nextPageNo != -1) {
                             pullData_Background(context, nextPageNo);
                             return;
-                        }else {
+                        } else {
                             sessionManager.setPullExcutedTime(sessionManager.isPulled());
                             Intent broadcast = new Intent();
                             broadcast.putExtra("JOB", AppConstants.SYNC_PULL_DATA_DONE);
@@ -217,7 +225,7 @@ public class SyncDAO {
         String encoded = sessionManager.getEncoded();
         String oldDate = sessionManager.getPullExcutedTime();
         String url = BuildConfig.SERVER_URL + "/EMR-Middleware/webapi/pull/pulldata/"
-                + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime()+
+                + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime() +
                 "/" + pageNo + "/" + AppConstants.PAGE_LIMIT;
 //        String url =  sessionManager.getServerUrl() + "/pulldata/" + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime();
         Call<ResponseDTO> middleWarePullResponseCall = AppConstants.apiInterface.RESPONSE_DTO_CALL(url, "Basic " + encoded);
@@ -244,12 +252,12 @@ public class SyncDAO {
                         int percentage = 0; // this should be only in initialSync....
 
                         if (nextPageNo != -1) {
-                            percentage = (int) Math.round(nextPageNo * AppConstants.PAGE_LIMIT * 100.0/totalCount);
+                            percentage = (int) Math.round(nextPageNo * AppConstants.PAGE_LIMIT * 100.0 / totalCount);
                             Logger.logD(PULL_ISSUE, "percentage: " + percentage);
                             setProgress(percentage);
                             pullData(context, fromActivity, nextPageNo);
                             return;
-                        }else {
+                        } else {
                             percentage = 100;
                             sessionManager.setPullExcutedTime(sessionManager.isPulled());
                             Logger.logD(PULL_ISSUE, "percentage page -1: " + percentage);
@@ -343,6 +351,7 @@ public class SyncDAO {
     /**
      * this method for syncing data first time with background service
      * we starting background service here
+     *
      * @param context
      * @param fromActivity
      * @return
@@ -356,8 +365,9 @@ public class SyncDAO {
         sessionManager = new SessionManager(context);
         String encoded = sessionManager.getEncoded();
         String oldDate = sessionManager.getPullExcutedTime();
-        String url = BuildConfig.SERVER_URL + "/EMR-Middleware/webapi/pull/pulldata/" + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime()+
-                "/" + pageNo + "/" + AppConstants.PAGE_LIMIT;;
+        String url = BuildConfig.SERVER_URL + "/EMR-Middleware/webapi/pull/pulldata/" + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime() +
+                "/" + pageNo + "/" + AppConstants.PAGE_LIMIT;
+        ;
 //        String url =  sessionManager.getServerUrl() + "/pulldata/" + sessionManager.getLocationUuid() + "/" + sessionManager.getPullExcutedTime();
         Logger.logD(PULL_ISSUE, url);
         Call<ResponseDTO> middleWarePullResponseCall = AppConstants.apiInterface.RESPONSE_DTO_CALL(url, "Basic " + encoded);
@@ -378,9 +388,8 @@ public class SyncDAO {
                     //Inserting huge data to database is a heavy operation
                     //that's why we using service here for initial data push
                     Intent intent = new Intent(context, InitialSyncIntentService.class);
-                    intent.putExtra("from",fromActivity);
+                    intent.putExtra("from", fromActivity);
                     context.startService(intent);
-
 
 
                     if (sessionManager.getTriggerNoti().equals("yes")) {
@@ -656,4 +665,48 @@ public class SyncDAO {
     public static SyncProgress getSyncProgress_LiveData() {
         return liveDataSync;
     }
+
+    public void fetchHWMobileNumber(Context context) {
+        String uuid = new SessionManager(context).getCreatorID();
+        ProviderDAO providerDAO = new ProviderDAO();
+
+        String url = new UrlModifiers().getHWProfileDetails(uuid);
+        Log.d(TAG, "profilePicDownloaded:: url : " + url);
+
+        Observable<Profile> profileDetailsDownload = AppConstants.apiInterface.PROVIDER_PROFILE_DETAILS_DOWNLOAD(url, "Basic " + new SessionManager(context).getEncoded());
+        profileDetailsDownload.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<Profile>() {
+            @Override
+            public void onNext(Profile profile) {
+                if (profile != null) {
+                    Timber.tag(TAG).d("Profile =>%s", new Gson().toJson(profile));
+                    Log.d(TAG, "fetchUserDetails: " + profile.getResults().get(0).getPerson().getPreferredName().getMiddleName());
+
+                    List<PersonAttributes> personAttributes = new ArrayList<>();
+                    personAttributes = profile.getResults().get(0).getAttributes();
+                    if (personAttributes != null && personAttributes.size() > 0) {
+                        for (int i = 0; i < personAttributes.size(); i++) {
+                            String attributeName = personAttributes.get(i).getAttributeTpe().getDisplay();
+                            if (attributeName.equalsIgnoreCase("phoneNumber") && !personAttributes.get(i).isVoided()) {
+                                String mobileNoHW = personAttributes.get(i).getValue().toString();
+                                Log.d(TAG, "onNext: mobileNo : " + mobileNoHW);
+                                sessionManager.setLoginHWMobileNumber(mobileNoHW);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                Logger.logD(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
+    }
+
 }
