@@ -948,4 +948,19 @@ public class VisitsDAO {
 
         return visitId;
     }
+
+    public String getUuidForAttribute(String attr) {
+        String attributeUuid = "";
+        SQLiteDatabase db = IntelehealthApplication.inteleHealthDatabaseHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT uuid FROM tbl_visit_attribute where name = ? COLLATE NOCASE", new String[]{attr});
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                attributeUuid = cursor.getString(cursor.getColumnIndexOrThrow("uuid"));
+            }
+        }
+        cursor.close();
+
+        return attributeUuid;
+    }
+
 }

@@ -82,7 +82,7 @@ import org.intelehealth.app.R;
 import org.intelehealth.app.activities.aboutus.AboutUsActivity;
 import org.intelehealth.app.activities.achievements.fragments.MyAchievementsFragment;
 import org.intelehealth.app.activities.callflow.CallRecordingsActivity;
-import org.intelehealth.app.activities.callflow.MissedCallActivity;
+import org.intelehealth.app.activities.callflow.NewMissedCallActivity;
 import org.intelehealth.app.activities.help.activities.HelpFragment_New;
 import org.intelehealth.app.activities.informativeVideos.fragments.InformativeVideosFragment_New;
 import org.intelehealth.app.activities.loginActivity.LoginActivityNew;
@@ -916,7 +916,7 @@ public class HomeScreenActivity_New extends BaseActivity implements NetworkUtils
         } else if (itemId == R.id.menu_logout) {
             wantToLogoutFromApp(this, getResources().getString(R.string.menu_option_logout), getResources().getString(R.string.sure_to_logout), getResources().getString(R.string.yes), getResources().getString(R.string.no));
         } else if (itemId == R.id.menu_missed_calls) {
-            Intent i = new Intent(HomeScreenActivity_New.this, MissedCallActivity.class);
+            Intent i = new Intent(HomeScreenActivity_New.this, NewMissedCallActivity.class);
             startActivity(i);
         } else if (itemId == R.id.menu_call_recordings) {
             Intent i = new Intent(HomeScreenActivity_New.this, CallRecordingsActivity.class);

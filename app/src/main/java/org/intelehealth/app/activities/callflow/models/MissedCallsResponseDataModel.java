@@ -14,25 +14,36 @@ public class MissedCallsResponseDataModel {
         CallTime = callTime;
     }
 
-    public String getName() {
-        return Name;
+    public String getCallType() {
+        return CallType;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setCallType(String callType) {
+        CallType = callType;
     }
 
-    public String getNoanswer() {
-        return Noanswer;
+    public String getPatientNumber() {
+        return PatientNumber;
     }
 
-    public void setNoanswer(String noanswer) {
-        Noanswer = noanswer;
+    public void setPatientNumber(String patientNumber) {
+        PatientNumber = patientNumber;
     }
 
-    @SerializedName("Name")
-    private String Name;
+    public String getRecord_id() {
+        return record_id;
+    }
 
-    @SerializedName("Noanswer")
-    private String Noanswer;
+    public void setRecord_id(String record_id) {
+        this.record_id = record_id;
+    }
+
+    @SerializedName("CallType")
+    private String CallType;
+
+    @SerializedName("PatientNumber")
+    private String PatientNumber;
+    @SerializedName("record_id")
+    private String record_id;
+
 }

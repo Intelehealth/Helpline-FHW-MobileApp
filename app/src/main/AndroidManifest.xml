@@ -49,7 +49,23 @@
         tools:ignore="UnusedAttribute, LockedOrientationActivity"
         tools:replace="allowBackup">
         <activity
-            android:name=".activities.callflow.MissedCallActivity"
+            android:name=".activities.callflow.MissedCallActivityK"
+            android:exported="false" />
+        <activity
+            android:name=".activities.callflow.NewMissedCallActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.callflow.NewCallRecordingActiivty"
+            android:exported="false" />
+        <activity
+            android:name=".activities.callflow.MissedCallActivityOld"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.callflow.AudioPlayerActivity"
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
@@ -84,7 +100,6 @@
             </intent-filter>
         </activity>
         -->
-
         <activity
             android:name=".profile.MyProfileActivity"
             android:exported="true"

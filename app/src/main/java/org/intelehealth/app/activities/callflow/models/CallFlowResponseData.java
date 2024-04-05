@@ -1,5 +1,7 @@
 package org.intelehealth.app.activities.callflow.models;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 public class CallFlowResponseData {

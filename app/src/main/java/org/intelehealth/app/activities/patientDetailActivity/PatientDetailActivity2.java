@@ -151,7 +151,8 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
     private static final String TAG = PatientDetailActivity2.class.getSimpleName();
     TextView name_txtview, openmrsID_txt, patientname, gender, patientdob, patientage, phone,
             postalcode, patientcountry, patientstate, patientdistrict, village, address1, addr2View,
-            son_daughter_wife, patientoccupation, patientcaste, patienteducation, patienteconomicstatus, patientNationalID;
+            son_daughter_wife, patientoccupation, patientcaste, patienteducation, patienteconomicstatus,
+            patientNationalID,tvNoBelongsTo, tvCallType;
     SessionManager sessionManager = null;
     //    Patient patientDTO = new Patient();
     PatientsDAO patientsDAO = new PatientsDAO();
@@ -532,6 +533,8 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
         patientcaste = findViewById(R.id.caste);
         patienteducation = findViewById(R.id.education);
         patienteconomicstatus = findViewById(R.id.economicstatus);
+        tvNoBelongsTo = findViewById(R.id.tv_no_belongs_to);
+        tvCallType = findViewById(R.id.tv_call_type);
 
         personal_edit = findViewById(R.id.personal_edit);
         address_edit = findViewById(R.id.address_edit);
@@ -899,7 +902,12 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
                 if (name.equalsIgnoreCase("providerUUID")) {
                     patientDTO.setProviderUUID(idCursor1.getString(idCursor1.getColumnIndexOrThrow("value")));
                 }
-
+                if (name.equalsIgnoreCase("typeOfCall")) {
+                    patientDTO.setTypeOfCall(idCursor1.getString(idCursor1.getColumnIndexOrThrow("value")));
+                }
+                if (name.equalsIgnoreCase("numberBelongsTo")) {
+                    patientDTO.setNumberBelongsTo(idCursor1.getString(idCursor1.getColumnIndexOrThrow("value")));
+                }
             } while (idCursor1.moveToNext());
         }
         idCursor1.close();
@@ -1473,6 +1481,16 @@ public class PatientDetailActivity2 extends BaseActivity implements NetworkUtils
             patientoccupation.setText(patientDTO.getOccupation());
         } else {
             patientoccupation.setText(getString(R.string.not_provided));
+        }
+        if (patientDTO.getNumberBelongsTo() != null && !patientDTO.getNumberBelongsTo().equals("")) {
+            tvNoBelongsTo.setText(patientDTO.getNumberBelongsTo());
+        } else {
+            tvNoBelongsTo.setText(getString(R.string.not_provided));
+        }
+        if (patientDTO.getTypeOfCall() != null && !patientDTO.getTypeOfCall().equals("")) {
+            tvCallType.setText(patientDTO.getTypeOfCall());
+        } else {
+            tvCallType.setText(getString(R.string.not_provided));
         }
     }
 

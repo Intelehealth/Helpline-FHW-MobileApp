@@ -264,7 +264,7 @@ public class PatientDTO implements Serializable {
         this.prescription_exists = prescription_exists;
     }
 
-    public String  getSon_dau_wife() {
+    public String getSon_dau_wife() {
         return son_dau_wife;
     }
 
@@ -320,6 +320,22 @@ public class PatientDTO implements Serializable {
         this.visitDTO = visitDTO;
     }
 
+    public String getNumberBelongsTo() {
+        return numberBelongsTo;
+    }
+
+    public void setNumberBelongsTo(String numberBelongsTo) {
+        this.numberBelongsTo = numberBelongsTo;
+    }
+
+    public String getTypeOfCall() {
+        return typeOfCall;
+    }
+
+    public void setTypeOfCall(String typeOfCall) {
+        this.typeOfCall = typeOfCall;
+    }
+
     @Override
     public String toString() {
         return "PatientDTO{" +
@@ -348,4 +364,11 @@ public class PatientDTO implements Serializable {
                 ", prescription_exists=" + prescription_exists +
                 '}';
     }
+
+    @SerializedName("numberBelongsTo")
+    @Expose
+    private String numberBelongsTo;
+    @SerializedName("typeOfCall")
+    @Expose
+    private String typeOfCall;
 }

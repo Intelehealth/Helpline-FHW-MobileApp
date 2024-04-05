@@ -207,6 +207,13 @@ public class AppConstants {
     public static final String AUTH_HEADER_CALL_FLOW = "Basic bnVyc2U6TnVyc2VAMTIz";
 
     public static final String DISPLAY_FORMAT_CALL = "dd MMMM, 'at' hh:mm a";
+    //For send prescription through sms
+    public static final String SMS_API_REQUEST_URL = "https://2factor.in/API/R1/";
+    public static final String MODULE = "TRANS_SMS";
+    public static final String APIKEY = "5025bb5d-b9b0-11ed-81b6-0200cd936042";
+    public static final String FROM = "TIFDOC";
+    public static final String CTID = "1107171170759843438";
+
 
 
 }

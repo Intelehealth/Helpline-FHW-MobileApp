@@ -6,11 +6,12 @@
         android:id="@+id/card_missed_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/screen_padding"
+        android:layout_marginStart="@dimen/list_row_items_margin"
+        android:layout_marginTop="@dimen/list_row_items_margin"
+        android:layout_marginEnd="@dimen/list_row_items_margin"
+        android:layout_marginBottom="@dimen/margin_start_call_info"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/margin_8"
-        android:layout_marginHorizontal="@dimen/margin_5"
-        app:cardElevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,44 +20,100 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/list_container_padding"
+            android:paddingBottom="-5dp"
             android:layout_marginHorizontal="@dimen/list_container_padding"
-            android:padding="@dimen/screen_container_padding">
+            android:layout_marginVertical="@dimen/list_container_padding">
 
-            <TextView
-                android:id="@+id/tv_patient_name_call"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_call_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="@dimen/list_container_padding"
+                android:padding="@dimen/row_item_container_padding">
+
+                <TextView
+                    android:id="@+id/tv_patient_name_call"
+                    style="@style/text_title_style"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:hint="Name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_date_time_call"
+                    style="@style/TextviewInputTitleStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:hint="Date Time"
+                    app:drawableStartCompat="@drawable/custom_calendar_start"
+                    app:layout_constraintBottom_toBottomOf="@+id/layout_views_recording"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_views_recording"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/iv_row_call_icons"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call">
+
+                    <ImageView
+                        android:id="@+id/iv_play_audio"
+                        android:layout_width="@dimen/iv_row_call_icons"
+                        android:layout_height="@dimen/iv_row_call_icons"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ui2_ic_play_audio" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar_recording"
+                        android:layout_width="@dimen/iv_row_call_icons"
+                        android:layout_height="@dimen/iv_row_call_icons"
+                        android:padding="3dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_start_call_info"
-                android:gravity="center_vertical"
-                android:hint="Name"
-                style="@style/text_title_style"
-                app:layout_constraintBottom_toBottomOf="@+id/parent"
-                app:layout_constraintStart_toEndOf="@+id/parent"
-               />
-
-            <TextView
-                android:id="@+id/tv_date_time_call"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_start_call_datetime"
-                android:hint="Date Time"
-                style="@style/TextviewInputTitleStyle"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_call_whatsapp"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call"
-                app:drawableStartCompat="@drawable/custom_calendar_start" />
-
-            <ImageView
-                android:id="@+id/iv_call_whatsapp"
-                android:layout_width="@dimen/iv_row_call_icons"
-                android:layout_height="@dimen/iv_row_call_icons"
-                android:foreground="?attr/selectableItemBackground"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/custom_seekbar"
+                android:thumb="@drawable/thumb"
+                android:paddingEnd="@dimen/seekbar_margin"
+                android:paddingStart="@dimen/seekbar_margin"
+                android:layout_centerInParent="true"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call"
-                app:srcCompat="@drawable/ui2_ic_play_audio"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_call_details"/>
 
-
+         <!--   <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:thumb="@null"
+                android:layout_centerInParent="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_call_details" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

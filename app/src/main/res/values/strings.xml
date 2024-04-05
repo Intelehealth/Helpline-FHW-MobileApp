@@ -1886,6 +1886,14 @@ The disclosure of personal information to third parties shall be only for identi
     <string name="mobile_no_not_registered">Mobile number is not registered</string>
     <string name="call_initiated">Call initiated</string>
     <string name="try_later">Failed to connect, Please try later</string>
-
+    <string name="number_belongs_to">Whom does this number belong to?*</string>
+    <string name="type_of_call">What type of call is this?*</string>
+    <string name="incoming">Incoming</string>
+    <string name="outgoing">Outgoing</string>
+    <string name="number_belongs_to_label">Whom does this number belong to?</string>
+    <string name="type_of_call_label">What type of call is this?</string>
+    <string name="please_enter_here">Please enter here</string>
+    <string name="request_failed">Request failed</string>
+    <string name="sms_sent">SMS sent successfully</string>
 
 </resources>

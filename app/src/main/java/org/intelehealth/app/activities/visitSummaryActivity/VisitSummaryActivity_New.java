@@ -110,6 +110,9 @@ import org.intelehealth.app.activities.homeActivity.HomeScreenActivity_New;
 import org.intelehealth.app.activities.identificationActivity.IdentificationActivity_New;
 import org.intelehealth.app.activities.notification.AdapterInterface;
 import org.intelehealth.app.activities.prescription.PrescriptionBuilder;
+import org.intelehealth.app.activities.visit.PrescriptionActivity;
+import org.intelehealth.app.activities.visit.SMSApiCallManager;
+import org.intelehealth.app.activities.visit.model.PrescribedMedication;
 import org.intelehealth.app.app.AppConstants;
 import org.intelehealth.app.app.IntelehealthApplication;
 import org.intelehealth.app.appointment.dao.AppointmentDAO;
@@ -2557,7 +2560,13 @@ public class VisitSummaryActivity_New extends BaseActivity implements AdapterInt
             String prescription_link = visitAttributeListDAO.getVisitAttributesList_specificVisit(visitUuid, PRESCRIPTION_LINK);
             String whatsapp_url = partial_whatsapp_presc_url.concat(prescription_link);
             editText.setText(patient.getPhone_number());
-            Log.d(TAG, "sharePresc: presc url : "+prescription_link);
+            Log.d(TAG, "sharePresc: presc url : " + prescription_link);
+            AlertDialog alertDialog = alertdialogBuilder.create();
+            alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.ui2_rounded_corners_dialog_bg); // show rounded corner for the dialog
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);   // dim backgroun
+            int width = context.getResources().getDimensionPixelSize(R.dimen.internet_dialog_width);    // set width to your dialog.
+            alertDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
+            alertDialog.show();
 //                    Spanned hyperlink_whatsapp = HtmlCompat.fromHtml("<a href=" + whatsapp_url + ">Click Here</a>", HtmlCompat.FROM_HTML_MODE_COMPACT);
 
             //  editText.setFilters(new InputFilter[]{inputFilter, new InputFilter.LengthFilter(15)});
@@ -2571,10 +2580,14 @@ public class VisitSummaryActivity_New extends BaseActivity implements AdapterInt
                 if (!editText.getText().toString().equalsIgnoreCase("")) {
                     String phoneNumber = /*"+91" +*/ editText.getText().toString();
                     String whatsappMessage = getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here) + whatsapp_url + getString(R.string.and_enter_your_patient_id) + idView.getText().toString();
-                    Log.d(TAG, "sharePresc: presc url : "+prescription_link);
+                    Log.d(TAG, "sharePresc: presc url : " + prescription_link);
+
+                    alertDialog.dismiss();
+                    String smsMsgBody = sms_prescription();
+                    SMSApiCallManager.checkInternetAndCallApi(phoneNumber, VisitSummaryActivity_New.this, smsMsgBody);
 
                     // Toast.makeText(context, R.string.whatsapp_presc_toast, Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("https://api.whatsapp.com/send?phone=%s&text=%s", phoneNumber, getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here) + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + getString(R.string.and_enter_your_patient_id) + idView.getText().toString()))));
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("https://api.whatsapp.com/send?phone=%s&text=%s", phoneNumber, getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here) + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + getString(R.string.and_enter_your_patient_id) + idView.getText().toString()))));
 
                     // isreturningWhatsapp = true;
 
@@ -2584,12 +2597,6 @@ public class VisitSummaryActivity_New extends BaseActivity implements AdapterInt
 
             });
 
-            AlertDialog alertDialog = alertdialogBuilder.create();
-            alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.ui2_rounded_corners_dialog_bg); // show rounded corner for the dialog
-            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);   // dim backgroun
-            int width = context.getResources().getDimensionPixelSize(R.dimen.internet_dialog_width);    // set width to your dialog.
-            alertDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
-            alertDialog.show();
 
 //            alertDialog.setPositiveButton(getResources().getString(R.string.share),
 //                    new DialogInterface.OnClickListener() {
@@ -5867,5 +5874,98 @@ public class VisitSummaryActivity_New extends BaseActivity implements AdapterInt
             }
         }
 
+    }
+
+    private String getMedicationData() {
+        if (rxReturned.isEmpty()) {
+            return "";
+        }
+
+        String finalMedicationDataString = "";
+        String titleStart = "<font color=" + Color.GRAY + ">";
+        String titleEnd = "</font>";
+
+        StringBuilder medicationData = new StringBuilder();
+        String[] medicationDataArray = rxReturned.split("\n");
+        for (String s : medicationDataArray) {
+            if (!s.contains(":")) {
+                medicationData.append(titleStart);
+                medicationData.append(getString(R.string.additional_instruction));
+                medicationData.append(titleEnd);
+                medicationData.append("<br>");
+                medicationData.append(s);
+            } else {
+                medicationData.append(s);
+                medicationData.append("<br>");
+                medicationData.append("<br>");
+            }
+        }
+        if (medicationData.length() == 0) return "";
+
+        finalMedicationDataString = medicationData.toString();
+
+        return finalMedicationDataString;
+    }
+
+    private String sms_prescription() {
+        List<PrescribedMedication> prescribedMedicationArrayList = new ArrayList<>();
+
+        String mPatientName1 = patient.getFirst_name() + " " + ((!TextUtils.isEmpty(patient.getMiddle_name())) ? patient.getMiddle_name() : "") + " " + patient.getLast_name();
+        String mPatientName = mPatientName1.substring(0, Math.min(mPatientName1.length(), 30));
+        String mPatientDob = patient.getDate_of_birth();
+        String mGender = patient.getGender();
+
+        Calendar c = Calendar.getInstance();
+        System.out.println(getString(R.string.current_time) + c.getTime());
+
+        Calendar today = Calendar.getInstance();
+        Calendar dob = Calendar.getInstance();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = sdf.parse(mPatientDob);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dob.setTime(date);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        // Log.d(TAG, "sms_prescription: medication_txt : " + medication_txt);
+        // medication_txt
+        String partial_whatsapp_presc_url = new UrlModifiers().setwhatsappPresciptionUrl();
+        String prescription_link = new VisitAttributeListDAO().getVisitAttributesList_specificVisit(visitUuid, PRESCRIPTION_LINK);
+        String finalPrescUrl = partial_whatsapp_presc_url + Uri.encode("#") + prescription_link;
+        Log.d(TAG, "sms_prescription: prescription_link : " + prescription_link);
+        String heading = prescription1;
+        String heading2 = prescription2;
+        String heading3 = "<br/>";
+        String medicationData1 = Html.fromHtml(getMedicationData()).toString();
+        String medicationData = medicationData1.substring(0, Math.min(medicationData1.length(), 60));
+        //String rx_web = stringToWeb(medicationData).replace("<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">●", "<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">").replace("<p style=\"font-size:11pt; margin: 0px; padding: 0px;\"></p>", "</p>");
+        String rx_webFinal = medicationData + "...";
+        String htmlDocument = String.format("<b id=\"heading_1\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b><br>" + "<b id=\"heading_2\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b>" + "<br><br>" +
+
+                        "<b id=\"patient_name\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Patient %s</b><br>" + "<b id=\"patient_details\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Age: %s | Gender: %s  </b>" + "<br><br>" +
+
+                        "<b id=\"rx_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Medication<br>" + "%s </b>"
+
+                /*"</div>"*/, heading, heading2, /*heading3,*/ mPatientName, age, mGender, /*mSdw*/
+//                            address, mPatientOpenMRSID, mDate,
+                !medicationData.isEmpty() ? rx_webFinal : stringToWeb_sms("Not Provided...")) + "<br><br>Download full prescription at " + finalPrescUrl + " --- Powered by Intelehealth";
+
+        Log.d("html", "html:ppp " + Html.fromHtml(htmlDocument));
+        return htmlDocument;
+    }
+
+    private String stringToWeb_sms(String input) {
+        String formatted = "";
+        if (input != null && !input.isEmpty()) {
+
+            String para_open = "<b style=\"font-size:11pt; margin: 0px; padding: 0px;\">";
+            String para_close = "";
+            formatted = para_open + "- " + input.replaceAll("\n", para_close + para_open + "- ") + para_close;
+        }
+        return formatted;
     }
 }

@@ -119,8 +119,7 @@ import okhttp3.ResponseBody;
 public class MyProfileActivity extends BaseActivity implements SendSelectedDateInterface, NetworkUtils.InternetCheckUpdateInterface {
     private static final String TAG = "MyProfileActivity";
     TextInputEditText etEmail, etMobileNo;
-    TextView tvDob, tvAge, tvChangePhoto, tvErrorFirstName, tvErrorLastName, tvErrorMobileNo, tvErrorDob,
-            etUsername, etFirstName, etMiddleName, etLastName;
+    TextView tvDob, tvAge, tvChangePhoto, tvErrorFirstName, tvErrorLastName, tvErrorMobileNo, tvErrorDob, etUsername, etFirstName, etMiddleName, etLastName;
     LinearLayout layoutParent, ll_middlename;
     String selectedGender, profileImagePAth = "", errorMsg = "", mSelectedCountryCode = "", dobToDb;
     ImageView ivProfileImage, ivIsInternet, refresh;
@@ -187,10 +186,8 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
         snackbar_cv = findViewById(R.id.snackbar_cv);
         snackbar_text = findViewById(R.id.snackbar_text);
 
-        if (sessionManager.isEnableAppLock())
-            fingerprintSwitch.setChecked(true);
-        else
-            fingerprintSwitch.setChecked(false);
+        if (sessionManager.isEnableAppLock()) fingerprintSwitch.setChecked(true);
+        else fingerprintSwitch.setChecked(false);
 
         ivBack = toolbar.findViewById(R.id.iv_back_arrow_common);
         tvTitle.setText(getResources().getString(R.string.my_profile));
@@ -230,8 +227,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
         refresh.setOnClickListener(v -> {
             isSynced = syncNow(MyProfileActivity.this, refresh, syncAnimator);
-            if (isSynced)
-                fetchUserDetails();
+            if (isSynced) fetchUserDetails();
         });
 
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -576,8 +572,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
         if (!updatedDOB.equalsIgnoreCase(prevDOB)) {
             updateDOB(updatedAge, formattedDOB, gender);
         }
-        if (prevPhoneNum == null && phoneAttributeUuid == null && !updatedPhoneNum.trim().equalsIgnoreCase("")
-                && !updatedPhoneNum.equalsIgnoreCase(prevPhoneNum)) {
+        if (prevPhoneNum == null && phoneAttributeUuid == null && !updatedPhoneNum.trim().equalsIgnoreCase("") && !updatedPhoneNum.equalsIgnoreCase(prevPhoneNum)) {
             createProfileAttribute("e3a7e03a-5fd0-4e6c-b2e3-938adb3bbb37", updatedPhoneNum);
         } else if (phoneAttributeUuid != null && !updatedPhoneNum.equalsIgnoreCase(prevPhoneNum)) {
             updateProfileAttribute(phoneAttributeUuid, updatedPhoneNum);
@@ -609,8 +604,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
         ApiClient.changeApiBaseUrl(BuildConfig.SERVER_URL);
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-        Observable<ResponseBody> profileAttributeCreateRequest = apiService.PROFILE_ATTRIBUTE_CREATE(sessionManager.getProviderID(),
-                inputModel, "Basic " + sessionManager.getEncoded());
+        Observable<ResponseBody> profileAttributeCreateRequest = apiService.PROFILE_ATTRIBUTE_CREATE(sessionManager.getProviderID(), inputModel, "Basic " + sessionManager.getEncoded());
         profileAttributeCreateRequest.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<ResponseBody>() {
             @Override
             public void onNext(ResponseBody responseBody) {
@@ -641,8 +635,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
         ApiClient.changeApiBaseUrl(serverUrl);
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-        Observable<ResponseBody> profileAttributeUpdateRequest = apiService.PROFILE_ATTRIBUTE_UPDATE(attributeTypeUuid,
-                inputModel, "Basic " + sessionManager.getEncoded());
+        Observable<ResponseBody> profileAttributeUpdateRequest = apiService.PROFILE_ATTRIBUTE_UPDATE(attributeTypeUuid, inputModel, "Basic " + sessionManager.getEncoded());
         profileAttributeUpdateRequest.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<ResponseBody>() {
             @Override
             public void onNext(ResponseBody responseBody) {
@@ -670,8 +663,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
         ApiClient.changeApiBaseUrl(BuildConfig.SERVER_URL);
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
-        Observable<ResponseBody> profileAgeUpdateRequest = apiService.PROFILE_AGE_UPDATE(personUuid,
-                inputModel, "Basic " + sessionManager.getEncoded());
+        Observable<ResponseBody> profileAgeUpdateRequest = apiService.PROFILE_AGE_UPDATE(personUuid, inputModel, "Basic " + sessionManager.getEncoded());
         profileAgeUpdateRequest.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<ResponseBody>() {
             @Override
             public void onNext(ResponseBody responseBody) {
@@ -801,34 +793,23 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
     private AlertDialog mImagePickerAlertDialog;
 
-    private final ActivityResultLauncher<Intent> cameraIntentLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                Timber.tag(TAG).d("Camera result=>%s", new Gson().toJson(result));
-                if (result.getResultCode() == RESULT_OK) {
-                    if (result.getData() != null) captureImage(result.getData());
-                }
-            }
-    );
+    private final ActivityResultLauncher<Intent> cameraIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Timber.tag(TAG).d("Camera result=>%s", new Gson().toJson(result));
+        if (result.getResultCode() == RESULT_OK) {
+            if (result.getData() != null) captureImage(result.getData());
+        }
+    });
 
-    private final ActivityResultLauncher<Intent> galleryIntentLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                Timber.tag(TAG).d("Gallery result=>%s", new Gson().toJson(result));
-                if (result.getResultCode() == RESULT_OK) {
-                    if (result.getData() != null) pickImage(result.getData());
-                }
-            }
-    );
+    private final ActivityResultLauncher<Intent> galleryIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Timber.tag(TAG).d("Gallery result=>%s", new Gson().toJson(result));
+        if (result.getResultCode() == RESULT_OK) {
+            if (result.getData() != null) pickImage(result.getData());
+        }
+    });
 
     private void bindProfilePictureToUI(String url) {
-        RequestBuilder<Drawable> requestBuilder = Glide.with(this)
-                .asDrawable().sizeMultiplier(0.25f);
-        Glide.with(MyProfileActivity.this)
-                .load(new File(url))
-                .thumbnail(requestBuilder)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(ivProfileImage);
+        RequestBuilder<Drawable> requestBuilder = Glide.with(this).asDrawable().sizeMultiplier(0.25f);
+        Glide.with(MyProfileActivity.this).load(new File(url)).thumbnail(requestBuilder).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(ivProfileImage);
     }
 
     private void captureImage(Intent data) {
@@ -929,12 +910,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
             ProviderDAO providerDAO = new ProviderDAO();
             ProviderDTO providerDTO = providerDAO.getLoginUserDetails(sessionManager.getProviderID());
             if (providerDTO != null) {
-                ProviderDTO inputDTO = new ProviderDTO(providerDTO.getRole(),
-                        providerDTO.getUseruuid(), etEmail.getText().toString().trim(),
-                        etMobileNo.getText().toString().trim(), providerDTO.getProviderId(),
-                        etFirstName.getText().toString().trim(), etLastName.getText().toString().trim(),
-                        providerDTO.getVoided(), selectedGender, dobToDb, providerDTO.getUuid(),
-                        providerDTO.getIdentifier(), selectedCode, etMiddleName.getText().toString().trim());
+                ProviderDTO inputDTO = new ProviderDTO(providerDTO.getRole(), providerDTO.getUseruuid(), etEmail.getText().toString().trim(), etMobileNo.getText().toString().trim(), providerDTO.getProviderId(), etFirstName.getText().toString().trim(), etLastName.getText().toString().trim(), providerDTO.getVoided(), selectedGender, dobToDb, providerDTO.getUuid(), providerDTO.getIdentifier(), selectedCode, etMiddleName.getText().toString().trim());
 
                 String imagePath = "";
                 if (profileImagePAth != null && !profileImagePAth.isEmpty()) {
@@ -951,7 +927,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
                         snackbarUtils.showSnackLinearLayoutParentSuccess(this, layoutParent, getResources().getString(R.string.profile_details_updated_new), true);
                     SyncDAO syncDAO = new SyncDAO();
                     syncDAO.pushDataApi();
-
+                    syncDAO.fetchHWMobileNumber(MyProfileActivity.this);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -1044,13 +1020,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
         if (requestCode == CameraActivity.TAKE_IMAGE) {
             if (resultCode == RESULT_OK) {
                 String mCurrentPhotoPath = data.getStringExtra("RESULT");
-                Glide.with(MyProfileActivity.this)
-                        .load(new File(mCurrentPhotoPath))
-                        .thumbnail(0.25f)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(ivProfileImage);
+                Glide.with(MyProfileActivity.this).load(new File(mCurrentPhotoPath)).thumbnail(0.25f).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(ivProfileImage);
 
                 saveImage(mCurrentPhotoPath);
             }
@@ -1281,12 +1251,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
 
         if (providerDTO != null && providerDTO.getImagePath() != null && !providerDTO.getImagePath().isEmpty()) {
-            Glide.with(this)
-                    .load(providerDTO.getImagePath())
-                    .thumbnail(0.3f)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true).into(ivProfileImage);
+            Glide.with(this).load(providerDTO.getImagePath()).thumbnail(0.3f).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(ivProfileImage);
         } else {
             ivProfileImage.setImageDrawable(getResources().getDrawable(R.drawable.avatar1));
         }
@@ -1394,8 +1359,7 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
                     tvDob.setText(en_hi_dob_updated(dateToshow1) + ", " + splitedDate[2]);
                 }
                 myProfilePOJO.setNewDateOfBirth(dateToshow1 + ", " + splitedDate[2]);
-                if (tvErrorDob.getVisibility() == View.VISIBLE)
-                    tvErrorDob.setVisibility(View.GONE);
+                if (tvErrorDob.getVisibility() == View.VISIBLE) tvErrorDob.setVisibility(View.GONE);
                 shouldActivateSaveButton();
                 Log.d(TAG, "getSelectedDate: " + dateToshow1 + ", " + splitedDate[2]);
             } else if (age != null && !age.isEmpty() && Integer.parseInt(age) < 18) {

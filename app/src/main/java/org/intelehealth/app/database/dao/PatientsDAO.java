@@ -11,6 +11,7 @@ import android.util.Log;
 
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -403,12 +404,17 @@ public class PatientsDAO {
 
 
     public boolean patinetAttributeMaster(List<PatientAttributeTypeMasterDTO> patientAttributeTypeMasterDTOS) throws DAOException {
+        Log.d("TAG", "patinetAttributeMaster: test data: "+new Gson().toJson(patientAttributeTypeMasterDTOS));
+        Log.d("TAG", "patinetAttributeMaster:data size:  "+patientAttributeTypeMasterDTOS.size());
         boolean isInserted = true;
         SQLiteDatabase db = IntelehealthApplication.inteleHealthDatabaseHelper.getWriteDb();
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
             for (int i = 0; i < patientAttributeTypeMasterDTOS.size(); i++) {
+                Log.d("TAG", "patinetAttributeMaster: uuid: "+patientAttributeTypeMasterDTOS.get(i).getUuid());
+                Log.d("TAG", "patinetAttributeMaster: getName: "+patientAttributeTypeMasterDTOS.get(i).getName());
+
                 values.put("uuid", patientAttributeTypeMasterDTOS.get(i).getUuid());
                 values.put("name", patientAttributeTypeMasterDTOS.get(i).getName());
                 values.put("modified_date", AppConstants.dateAndTimeUtils.currentDateTime());

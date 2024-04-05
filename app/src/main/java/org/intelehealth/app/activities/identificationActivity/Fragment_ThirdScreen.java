@@ -57,12 +57,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -76,6 +79,7 @@ import org.intelehealth.app.database.dao.ImagesDAO;
 import org.intelehealth.app.database.dao.ImagesPushDAO;
 import org.intelehealth.app.database.dao.PatientsDAO;
 import org.intelehealth.app.database.dao.SyncDAO;
+import org.intelehealth.app.database.dao.VisitsDAO;
 import org.intelehealth.app.models.Patient;
 import org.intelehealth.app.models.dto.PatientAttributesDTO;
 import org.intelehealth.app.models.dto.PatientDTO;
@@ -90,6 +94,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Fragment_ThirdScreen extends Fragment {
@@ -100,11 +105,12 @@ public class Fragment_ThirdScreen extends Fragment {
     private ArrayAdapter<CharSequence> educationAdapter;
     private ArrayAdapter<CharSequence> casteAdapter;
     private ArrayAdapter<CharSequence> economicStatusAdapter;
-    private EditText mRelationNameEditText, mOccupationEditText, mNationalIDEditText;
-    private Spinner mCasteSpinner, mEducationSpinner, mEconomicstatusSpinner;
+    private EditText mRelationNameEditText, mOccupationEditText, mNationalIDEditText, etNoBelongsToOther;
+    private Spinner mCasteSpinner, mEducationSpinner, mEconomicstatusSpinner, mNumberBelongsToSpinner;
     private ImageView personal_icon, address_icon, other_icon;
     private Button frag3_btn_back, frag3_btn_next;
-    private TextView mRelationNameErrorTextView, mOccupationErrorTextView, mCasteErrorTextView, mEducationErrorTextView, mEconomicErrorTextView;
+    private TextView mRelationNameErrorTextView, mOccupationErrorTextView, mCasteErrorTextView, mEducationErrorTextView,
+            mEconomicErrorTextView, mNoBelongsToErrorTextView, mTypeOfCallErrorTextview, mNoBelongsToErrorTvOther;
     ImagesDAO imagesDAO = new ImagesDAO();
     private Fragment_SecondScreen secondScreen;
     boolean fromThirdScreen = false, fromSecondScreen = false;
@@ -112,7 +118,10 @@ public class Fragment_ThirdScreen extends Fragment {
     PatientsDAO patientsDAO = new PatientsDAO();
     String patientID_edit;
     boolean patient_detail = false;
-
+    private ArrayAdapter<CharSequence> noBelongsToAdapter;
+    private RadioGroup radioGroupCallType;
+    private RadioButton rbIncoming, rbOutgoing;
+    private String selectedCallType = "";
 
     @Nullable
     @Override
@@ -161,15 +170,23 @@ public class Fragment_ThirdScreen extends Fragment {
         mCasteSpinner = view.findViewById(R.id.caste_spinner);
         mEducationSpinner = view.findViewById(R.id.education_spinner);
         mEconomicstatusSpinner = view.findViewById(R.id.economicstatus_spinner);
+        mNumberBelongsToSpinner = view.findViewById(R.id.spinner_no_belongs_to);
+        radioGroupCallType = view.findViewById(R.id.radioGroup_call_type);
+        rbIncoming = view.findViewById(R.id.rb_incoming);
+        rbOutgoing = view.findViewById(R.id.rb_outgoing);
+        etNoBelongsToOther = view.findViewById(R.id.et_no_belongs_to_other_option);
 
         mRelationNameErrorTextView = view.findViewById(R.id.relation_error);
         mOccupationErrorTextView = view.findViewById(R.id.occupation_error);
         mCasteErrorTextView = view.findViewById(R.id.caste_error);
         mEducationErrorTextView = view.findViewById(R.id.education_error);
         mEconomicErrorTextView = view.findViewById(R.id.economic_error);
-
+        mNoBelongsToErrorTextView = view.findViewById(R.id.tv_error_no_belongs_to);
+        mTypeOfCallErrorTextview = view.findViewById(R.id.tv_error_type_of_call);
+        mNoBelongsToErrorTvOther = view.findViewById(R.id.tv_error_no_belongs_to_other);
 
         mRelationNameEditText.addTextChangedListener(new MyTextWatcher(mRelationNameEditText));
+        mRelationNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25
         mRelationNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25
 
         /*mNationalIDEditText.addTextChangedListener(new MyTextWatcher(mNationalIDEditText));
@@ -177,6 +194,8 @@ public class Fragment_ThirdScreen extends Fragment {
 
         mOccupationEditText.addTextChangedListener(new MyTextWatcher(mOccupationEditText));
         mOccupationEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25
+        etNoBelongsToOther.addTextChangedListener(new MyTextWatcher(etNoBelongsToOther));
+        etNoBelongsToOther.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25
 
         secondScreen = new Fragment_SecondScreen();
         if (getArguments() != null) {
@@ -235,6 +254,54 @@ public class Fragment_ThirdScreen extends Fragment {
 
             }
         });
+        mNumberBelongsToSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i != 0) {
+                    mNoBelongsToErrorTextView.setVisibility(View.GONE);
+                    mNumberBelongsToSpinner.setBackgroundResource(R.drawable.ui2_spinner_background_new);
+                    String selectedItem = mNumberBelongsToSpinner.getSelectedItem().toString();
+                    if (!selectedItem.isEmpty() && selectedItem.equalsIgnoreCase("Other")) {
+                        etNoBelongsToOther.setVisibility(View.VISIBLE);
+                    } else {
+                        etNoBelongsToOther.setText("");
+                        etNoBelongsToOther.setVisibility(View.GONE);
+                        mNoBelongsToErrorTvOther.setVisibility(View.GONE);
+                    }
+                } else {
+                    etNoBelongsToOther.setText("");
+                    etNoBelongsToOther.setVisibility(View.GONE);
+                    mNoBelongsToErrorTvOther.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        radioGroupCallType.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton checkedRadioButton = group.findViewById(checkedId);
+            boolean isChecked = checkedRadioButton.isChecked();
+            if (isChecked) {
+                selectedCallType = checkedRadioButton.getText().toString();
+                //myProfilePOJO.setNewGender(String.valueOf(selectedValue.charAt(0)));
+
+                switch (selectedCallType) {
+                    case "Incoming":
+                        rbIncoming.setButtonDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ui2_ic_selected_green));
+                        rbOutgoing.setButtonDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ui2_ic_circle));
+                        mTypeOfCallErrorTextview.setVisibility(View.GONE);
+                        break;
+                    case "Outgoing":
+                        rbIncoming.setButtonDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ui2_ic_circle));
+                        rbOutgoing.setButtonDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ui2_ic_selected_green));
+                        mTypeOfCallErrorTextview.setVisibility(View.GONE);
+                        break;
+                }
+            }
+        });
     }
 
     class MyTextWatcher implements TextWatcher {
@@ -257,16 +324,17 @@ public class Fragment_ThirdScreen extends Fragment {
         @Override
         public void afterTextChanged(Editable editable) {
             String val = editable.toString().trim();
-            /*if (this.editText.getId() == R.id.relation_edittext) {
-                if (val.isEmpty()) {
-                    mRelationNameErrorTextView.setVisibility(View.VISIBLE);
-                    mRelationNameErrorTextView.setText(getString(R.string.error_field_required));
-                    mRelationNameEditText.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+            if (this.editText.getId() == R.id.et_no_belongs_to_other_option) {
+                if (mNumberBelongsToSpinner.getSelectedItem().toString().equalsIgnoreCase("other") && val.isEmpty()) {
+                    mNoBelongsToErrorTvOther.setVisibility(View.VISIBLE);
+                    mNoBelongsToErrorTvOther.setText(getString(R.string.error_field_required));
+                    etNoBelongsToOther.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
                 } else {
-                    mRelationNameErrorTextView.setVisibility(View.GONE);
-                    mRelationNameEditText.setBackgroundResource(R.drawable.bg_input_fieldnew);
+                    mNoBelongsToErrorTvOther.setVisibility(View.GONE);
+                    etNoBelongsToOther.setBackgroundResource(R.drawable.bg_input_fieldnew);
+                    mNoBelongsToErrorTextView.setVisibility(View.GONE);
                 }
-            } else if (this.editText.getId() == R.id.occupation_editText) {
+            }  /*else if (this.editText.getId() == R.id.occupation_editText) {
                 if (val.isEmpty()) {
                     mOccupationErrorTextView.setVisibility(View.VISIBLE);
                     mOccupationErrorTextView.setText(getString(R.string.error_field_required));
@@ -294,7 +362,10 @@ public class Fragment_ThirdScreen extends Fragment {
         frag3_btn_next.setOnClickListener(v -> {
 //                Intent intent = new Intent(getActivity(), PatientDetailActivity2.class);
 //                startActivity(intent);
-            onPatientCreateClicked();
+            if (isDataValid())
+                onPatientCreateClicked();
+            //else
+            //Toast.makeText(requireActivity(), "Please fill the required fields", Toast.LENGTH_SHORT).show();
         });
 
         // caste spinner
@@ -347,6 +418,8 @@ public class Fragment_ThirdScreen extends Fragment {
             Logger.logE("Identification", "#648", e);
         }
 
+        setDataToSpinners();
+
         if (patientDTO.getSon_dau_wife() != null && !patientDTO.getSon_dau_wife().isEmpty())
             mRelationNameEditText.setText(patientDTO.getSon_dau_wife());
         Log.v(TAG, "relation: " + patientDTO.getSon_dau_wife());
@@ -357,8 +430,22 @@ public class Fragment_ThirdScreen extends Fragment {
         if (patientDTO.getNationalID() != null && !patientDTO.getNationalID().isEmpty())
             mNationalIDEditText.setText(patientDTO.getNationalID());
 
+
         // setting screen in edit for spinners...
         if (fromThirdScreen || fromSecondScreen) {
+            selectedCallType = patientDTO.getTypeOfCall();
+            if (selectedCallType != null && !selectedCallType.isEmpty()) {
+
+                if (selectedCallType.equalsIgnoreCase("Incoming")) {
+                    rbIncoming.setButtonDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ui2_ic_selected_green));
+                    rbOutgoing.setButtonDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ui2_ic_circle));
+
+                } else if (selectedCallType.equalsIgnoreCase("Outgoing")) {
+                    rbIncoming.setButtonDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ui2_ic_circle));
+                    rbOutgoing.setButtonDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ui2_ic_selected_green));
+                }
+            }
+
             //caste
             if (patientDTO.getCaste() != null) {
                 if (patientDTO.getCaste().equals(getResources().getString(R.string.not_provided)))
@@ -499,11 +586,122 @@ public class Fragment_ThirdScreen extends Fragment {
                         mEconomicstatusSpinner.setSelection(economicStatusAdapter.getPosition(patientDTO.getEconomic()));
                     }
                 }
+
+
+                // No belongs to
+                if (patientDTO.getNumberBelongsTo() != null) {
+                    Log.d(TAG, "onActivityCreated:other value:  " + patientDTO.getNumberBelongsTo());
+                    if (patientDTO.getNumberBelongsTo().equals(getResources().getString(R.string.not_provided)))
+                        mNumberBelongsToSpinner.setSelection(0);
+//            else
+//                economicstatus_spinner.setSelection(economicStatusAdapter.getPosition(patientDTO.getEconomic()));
+                    else if (patientDTO.getNumberBelongsTo().contains("Other")) {
+                        Log.d(TAG, "onActivityCreated: on other case");
+                        mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition("Other"));
+                        String[] parts = patientDTO.getNumberBelongsTo().split("-");
+                        etNoBelongsToOther.setText(parts[1]);
+                        etNoBelongsToOther.setVisibility(View.VISIBLE);
+                    } else {
+                        etNoBelongsToOther.setVisibility(View.GONE);
+                        if (sessionManager.getAppLanguage().equalsIgnoreCase("hi")) {
+                            String noBelongsTo = switch_hi_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("or")) {
+                            String noBelongsTo = switch_or_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("te")) {
+                            String noBelongsTo = switch_te_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("mr")) {
+                            String noBelongsTo = switch_mr_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("as")) {
+                            String noBelongsTo = switch_as_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("ml")) {
+                            String noBelongsTo = switch_ml_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("kn")) {
+                            String noBelongsTo = switch_kn_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("ru")) {
+                            String noBelongsTo = switch_ru_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("gu")) {
+                            String noBelongsTo = switch_gu_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("bn")) {
+                            String noBelongsTo = switch_bn_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else if (sessionManager.getAppLanguage().equalsIgnoreCase("ta")) {
+                            String noBelongsTo = switch_ta_economic_edit(patientDTO.getNumberBelongsTo());
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(noBelongsTo));
+                        } else {
+                            mNumberBelongsToSpinner.setSelection(noBelongsToAdapter.getPosition(patientDTO.getNumberBelongsTo()));
+                        }
+                    }
+                }
+
+                /*if (patientDTO.getTypeOfCall() != null && !patientDTO.getTypeOfCall().isEmpty()) {
+                    if (selectedCallType.equalsIgnoreCase("incoming")) {
+                        rbIncoming.setChecked(true);
+                    } else {
+                        rbOutgoing.setChecked(true);
+                    }
+                }*/
             }
 
-
         }
+    }
 
+    private boolean isDataValid() {
+        String noBelongToValue = mNumberBelongsToSpinner.getSelectedItem().toString();
+        Log.d(TAG, "isDataValid: noBelongToValue:" + noBelongToValue);
+        if (mNumberBelongsToSpinner.getSelectedItem().toString().isEmpty() || mNumberBelongsToSpinner.getSelectedItem().toString().equalsIgnoreCase("Select")) {
+            mNoBelongsToErrorTextView.setVisibility(View.VISIBLE);
+            mNumberBelongsToSpinner.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+            mNumberBelongsToSpinner.requestFocus();
+            return false;
+        } else if (noBelongToValue.equalsIgnoreCase("other") && etNoBelongsToOther.getText().toString().isEmpty()) {
+            Log.d(TAG, "isDataValid: in else other");
+            etNoBelongsToOther.setVisibility(View.VISIBLE);
+            mNoBelongsToErrorTvOther.setVisibility(View.VISIBLE);
+            etNoBelongsToOther.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+            return false;
+        } else {
+            mNoBelongsToErrorTextView.setVisibility(View.GONE);
+            mNumberBelongsToSpinner.setBackgroundResource(R.drawable.ui2_spinner_background_new);
+            mNoBelongsToErrorTvOther.setVisibility(View.GONE);
+            etNoBelongsToOther.setBackgroundResource(R.drawable.bg_input_fieldnew);
+        }
+        Log.d(TAG, "isDataValid: selectedCallType : " + selectedCallType);
+
+        if (selectedCallType == null || selectedCallType.isEmpty()) {
+            mTypeOfCallErrorTextview.setVisibility(View.VISIBLE);
+            return false;
+        } else {
+            mTypeOfCallErrorTextview.setVisibility(View.GONE);
+            return true;
+        }
+    }
+
+    private void setDataToSpinners() {
+        Resources res = getResources();
+        try {
+            String noBelongsTo = "no_belongs_to_" + sessionManager.getAppLanguage();
+            int noBelongsToValue = res.getIdentifier(noBelongsTo, "array", getActivity().getApplicationContext().getPackageName());
+            if (noBelongsToValue != 0) {
+                noBelongsToAdapter = ArrayAdapter.createFromResource(getActivity(),
+                        noBelongsToValue, R.layout.simple_spinner_item_1);
+                noBelongsToAdapter.setDropDownViewResource(R.layout.ui2_custome_dropdown_item_view);
+            }
+            mNumberBelongsToSpinner.setAdapter(noBelongsToAdapter);
+            mNumberBelongsToSpinner.setPopupBackgroundDrawable(getActivity().getDrawable(R.drawable.popup_menu_background));
+
+        } catch (Exception e) {
+//            Toast.makeText(this, R.string.education_values_missing, Toast.LENGTH_SHORT).show();
+            Logger.logE("Identification", "#648", e);
+        }
     }
 
     private void onBackInsertIntoPatientDTO() {
@@ -513,7 +711,12 @@ public class Fragment_ThirdScreen extends Fragment {
         patientDTO.setCaste(StringUtils.getValue(mCasteSpinner.getSelectedItem().toString()));
         patientDTO.setEducation(StringUtils.getValue(mEducationSpinner.getSelectedItem().toString()));
         patientDTO.setEconomic(StringUtils.getValue(mEconomicstatusSpinner.getSelectedItem().toString()));
-
+        //patientDTO.setNumberBelongsTo(StringUtils.getValue(mNumberBelongsToSpinner.getSelectedItem().toString()));
+        patientDTO.setTypeOfCall(selectedCallType);
+        if (mNumberBelongsToSpinner.getSelectedItem().toString().equalsIgnoreCase("other"))
+            patientDTO.setNumberBelongsTo(StringUtils.getValue(mNumberBelongsToSpinner.getSelectedItem().toString()) + "-" + etNoBelongsToOther.getText().toString());
+        else
+            patientDTO.setNumberBelongsTo(StringUtils.getValue(mNumberBelongsToSpinner.getSelectedItem().toString()));
         Bundle bundle = new Bundle();
         bundle.putSerializable("patientDTO", (Serializable) patientDTO);
         bundle.putBoolean("fromThirdScreen", true);
@@ -533,7 +736,12 @@ public class Fragment_ThirdScreen extends Fragment {
         patientDTO.setCaste(StringUtils.getValue(mCasteSpinner.getSelectedItem().toString()));
         patientDTO.setEducation(StringUtils.getValue(mEducationSpinner.getSelectedItem().toString()));
         patientDTO.setEconomic(StringUtils.getValue(mEconomicstatusSpinner.getSelectedItem().toString()));
-
+        patientDTO.setTypeOfCall(selectedCallType);
+        //patientDTO.setNumberBelongsTo(StringUtils.getValue(mNumberBelongsToSpinner.getSelectedItem().toString()));
+        if (mNumberBelongsToSpinner.getSelectedItem().toString().equalsIgnoreCase("other"))
+            patientDTO.setNumberBelongsTo(StringUtils.getValue(mNumberBelongsToSpinner.getSelectedItem().toString()) + "-" + etNoBelongsToOther.getText().toString());
+        else
+            patientDTO.setNumberBelongsTo(StringUtils.getValue(mNumberBelongsToSpinner.getSelectedItem().toString()));
         PatientsDAO patientsDAO = new PatientsDAO();
         PatientAttributesDTO patientAttributesDTO = new PatientAttributesDTO();
         List<PatientAttributesDTO> patientAttributesDTOList = new ArrayList<>();
@@ -687,6 +895,23 @@ public class Fragment_ThirdScreen extends Fragment {
             patientAttributesDTO.setValue(sessionManager.getProviderID());
         }
         patientAttributesDTOList.add(patientAttributesDTO);
+
+        // numberBelongsTo
+        patientAttributesDTO = new PatientAttributesDTO();
+        patientAttributesDTO.setUuid(UUID.randomUUID().toString());
+        patientAttributesDTO.setPatientuuid(uuid);
+        patientAttributesDTO.setPersonAttributeTypeUuid(patientsDAO.getUuidForAttribute("numberBelongsTo"));
+        patientAttributesDTO.setValue(patientDTO.getNumberBelongsTo());
+        patientAttributesDTOList.add(patientAttributesDTO);
+
+        // numberBelongsTo
+        patientAttributesDTO = new PatientAttributesDTO();
+        patientAttributesDTO.setUuid(UUID.randomUUID().toString());
+        patientAttributesDTO.setPatientuuid(uuid);
+        patientAttributesDTO.setPersonAttributeTypeUuid(patientsDAO.getUuidForAttribute("typeOfCall"));
+        patientAttributesDTO.setValue(selectedCallType);
+        patientAttributesDTOList.add(patientAttributesDTO);
+
 
         patientDTO.setPatientAttributesDTOList(patientAttributesDTOList);
         patientDTO.setSyncd(false);

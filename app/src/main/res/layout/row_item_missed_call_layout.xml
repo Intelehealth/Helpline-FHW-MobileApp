@@ -6,11 +6,12 @@
         android:id="@+id/card_missed_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/screen_padding"
+        android:layout_marginStart="@dimen/list_row_items_margin"
+        android:layout_marginTop="@dimen/list_row_items_margin"
+        android:layout_marginEnd="@dimen/list_row_items_margin"
+        android:layout_marginBottom="@dimen/margin_start_call_info"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/margin_8"
-        android:layout_marginHorizontal="@dimen/margin_5"
-        app:cardElevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,8 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginVertical="@dimen/list_container_padding"
-            android:layout_marginHorizontal="@dimen/list_container_padding"
-            android:padding="@dimen/screen_container_padding">
+            android:padding="@dimen/row_item_container_padding">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -33,27 +33,27 @@
 
             <TextView
                 android:id="@+id/tv_patient_name_call"
+                style="@style/text_title_style"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start_call_info"
                 android:gravity="center_vertical"
                 android:hint="Name"
-                style="@style/text_title_style"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="@+id/imageView" />
 
             <TextView
                 android:id="@+id/tv_date_time_call"
+                style="@style/TextviewInputTitleStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start_call_datetime"
                 android:hint="Date Time"
-                style="@style/TextviewInputTitleStyle"
+                app:drawableStartCompat="@drawable/custom_calendar_start"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_call_whatsapp"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call"
-                app:drawableStartCompat="@drawable/custom_calendar_start" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call" />
 
             <ImageView
                 android:id="@+id/iv_call_whatsapp"
@@ -68,8 +68,8 @@
                 android:id="@+id/iv_call_missed_call"
                 android:layout_width="@dimen/iv_row_call_icons"
                 android:layout_height="@dimen/iv_row_call_icons"
+                android:layout_marginEnd="@dimen/call_icons_margin_end"
                 android:foreground="?attr/selectableItemBackground"
-                android:layout_marginEnd="@dimen/list_row_items_margin"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_call_whatsapp"
                 app:layout_constraintEnd_toStartOf="@+id/iv_call_whatsapp"
                 app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call"

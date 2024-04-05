@@ -180,7 +180,7 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
         mLastNameEditText.addTextChangedListener(new MyTextWatcher(mLastNameEditText));
         mDOBEditText.addTextChangedListener(new MyTextWatcher(mDOBEditText));
         mAgeEditText.addTextChangedListener(new MyTextWatcher(mAgeEditText));
-        //mPhoneNumberEditText.addTextChangedListener(new MyTextWatcher(mPhoneNumberEditText));
+        mPhoneNumberEditText.addTextChangedListener(new MyTextWatcher(mPhoneNumberEditText));
 
         fragment_secondScreen = new Fragment_SecondScreen();
         if (getArguments() != null) {
@@ -263,7 +263,6 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
             }
         }
 
-        setMobileNumberLimit();
 
 
     }
@@ -273,10 +272,15 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
 
     private void setMobileNumberLimit() {
         mSelectedCountryCode = mCountryCodePicker.getSelectedCountryCode();
+        Log.d(TAG, "setMobileNumberLimit: mSelectedCountryCode : " + mSelectedCountryCode);
+
         if (mSelectedCountryCode.equals("91")) {
             mSelectedMobileNumberValidationLength = 10;
+        } else {
+            mSelectedMobileNumberValidationLength = 15;
+
         }
-        mPhoneNumberEditText.setInputType(InputType.TYPE_CLASS_PHONE);
+       // mPhoneNumberEditText.setInputType(InputType.TYPE_CLASS_PHONE);
         InputFilter inputFilter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -601,6 +605,24 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mCountryCodePicker.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
+            @Override
+            public void onCountrySelected() {
+                String selectedCountryCode = mCountryCodePicker.getSelectedCountryCode();
+                String selectedCountryName = mCountryCodePicker.getSelectedCountryName();
+                mPhoneNumberEditText.setText("");
+
+                // Do something with the selected country code and name
+                Log.d("Country Selected", "Code: " + selectedCountryCode + ", Name: " + selectedCountryName);
+                setMobileNumberLimit();
+            }
+        });
+        setMobileNumberLimit();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == GROUP_PERMISSION_REQUEST) {
@@ -777,7 +799,51 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
             mAgeErrorTextView.setVisibility(View.GONE);
             mAgeEditText.setBackgroundResource(R.drawable.bg_input_fieldnew);
         }
+        if (!mPhoneNumberEditText.getText().toString().equals("")) {
+            String s = mPhoneNumberEditText.getText().toString().replaceAll("\\s+", "");
+            Log.v("phone", "phone: " + s);
+            if (mCountryCodePicker.getSelectedCountryCode().equalsIgnoreCase("91") && s.length() < mSelectedMobileNumberValidationLength) {
+                mPhoneNumberErrorTextView.setVisibility(View.VISIBLE);
+                mPhoneNumberErrorTextView.setText(getString(R.string.enter_10_digits));
+                mPhoneNumberEditText.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+                mPhoneNumberEditText.requestFocus();
+                return;
+            } else {
+                mPhoneNumberErrorTextView.setVisibility(View.GONE);
+                mPhoneNumberEditText.setBackgroundResource(R.drawable.bg_input_fieldnew);
+            }
+            if (!mCountryCodePicker.getSelectedCountryCode().equalsIgnoreCase("91") && s.length() < 15) {
+                mPhoneNumberErrorTextView.setVisibility(View.VISIBLE);
+                mPhoneNumberErrorTextView.setText(getString(R.string.enter_15_digits));
+                mPhoneNumberEditText.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+                mPhoneNumberEditText.requestFocus();
+                return;
+            } else {
+                mPhoneNumberErrorTextView.setVisibility(View.GONE);
+                mPhoneNumberEditText.setBackgroundResource(R.drawable.bg_input_fieldnew);
+            }
 
+            if (mCountryCodePicker.getSelectedCountryCode().equalsIgnoreCase("91")
+                    && s.length() != mSelectedMobileNumberValidationLength) {
+                mPhoneNumberErrorTextView.setVisibility(View.VISIBLE);
+                mPhoneNumberErrorTextView.setText(R.string.invalid_mobile_no);
+                mPhoneNumberEditText.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+                mPhoneNumberEditText.requestFocus();
+                return;
+            } else {
+                mPhoneNumberErrorTextView.setVisibility(View.GONE);
+                mPhoneNumberEditText.setBackgroundResource(R.drawable.bg_input_fieldnew);
+            }
+        } else {
+            mPhoneNumberErrorTextView.setVisibility(View.VISIBLE);
+            mPhoneNumberErrorTextView.setText(getString(R.string.error_field_required));
+            mPhoneNumberEditText.setBackgroundResource(R.drawable.input_field_error_bg_ui2);
+            mPhoneNumberEditText.requestFocus();
+            return;
+        }
+
+
+/*      previous logic
         if (!mPhoneNumberEditText.getText().toString().equals("")) {
             String s = mPhoneNumberEditText.getText().toString().replaceAll("\\s+", "");
             Log.v("phone", "phone: " + s);
@@ -811,6 +877,7 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
                 mPhoneNumberEditText.setBackgroundResource(R.drawable.bg_input_fieldnew);
             }
         }
+*/
 
         if (mCurrentPhotoPath != null)
             patientdto.setPatientPhoto(mCurrentPhotoPath);

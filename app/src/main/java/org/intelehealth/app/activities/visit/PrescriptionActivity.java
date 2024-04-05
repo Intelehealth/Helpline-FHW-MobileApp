@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.LocaleList;
+import android.os.StrictMode;
 import android.print.PdfPrint;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
@@ -79,6 +80,9 @@ import org.intelehealth.app.R;
 import org.intelehealth.app.activities.homeActivity.HomeScreenActivity_New;
 import org.intelehealth.app.activities.identificationActivity.IdentificationActivity_New;
 import org.intelehealth.app.activities.prescription.PrescriptionBuilder;
+import org.intelehealth.app.activities.visit.model.PrescribedMedication;
+import org.intelehealth.app.activities.visit.model.SendSMSRequest;
+import org.intelehealth.app.activities.visit.model.SendSMSRequestModel;
 import org.intelehealth.app.app.AppConstants;
 import org.intelehealth.app.app.IntelehealthApplication;
 import org.intelehealth.app.appointment.dao.AppointmentDAO;
@@ -96,6 +100,8 @@ import org.intelehealth.app.models.VitalsObject;
 import org.intelehealth.app.models.dto.ObsDTO;
 import org.intelehealth.app.models.dto.PatientDTO;
 import org.intelehealth.app.models.dto.ProviderDTO;
+import org.intelehealth.app.networkApiCalls.ApiClient;
+import org.intelehealth.app.networkApiCalls.ApiInterface;
 import org.intelehealth.app.shared.BaseActivity;
 import org.intelehealth.app.syncModule.SyncUtils;
 import org.intelehealth.app.utilities.AppointmentUtils;
@@ -110,6 +116,7 @@ import org.intelehealth.app.utilities.StringUtils;
 import org.intelehealth.app.utilities.UrlModifiers;
 import org.intelehealth.app.utilities.UuidDictionary;
 import org.intelehealth.app.utilities.exception.DAOException;
+import org.intelehealth.app.widget.materialprogressbar.CustomProgressDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -126,6 +133,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Prajwal Waingankar on 4/11/2022.
  * Github : @prajwalmw
@@ -133,6 +145,7 @@ import java.util.Objects;
  */
 @SuppressLint("Range")
 public class PrescriptionActivity extends BaseActivity implements NetworkUtils.InternetCheckUpdateInterface {
+    private static final String TAG = "PrescriptionActivity";
     private String patientName, patientUuid, gender, age, openmrsID, vitalsUUID, adultInitialUUID, intentTag, visitID, visit_startDate, visit_speciality, patient_photo_path, chief_complaint_value;
     private ImageButton btn_up_header, btnup_drdetails_header, btnup_diagnosis_header, btnup_medication_header, btnup_test_header, btnup_speciality_header, btnup_followup_header, no_btn, yes_btn, downloadBtn;
     private LinearLayout presc_profile_header;
@@ -426,6 +439,7 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
         });
 
         btn_vs_share.setOnClickListener(v -> {
+
             sharePresc();
         });
         // Bottom Buttons - end
@@ -479,18 +493,11 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
     private void showEndVisitConfirmationDialog() {
         if (hasPrescription) {
             DialogUtils dialogUtils = new DialogUtils();
-            dialogUtils.showCommonDialog(
-                    this, R.drawable.dialog_close_visit_icon,
-                    getResources().getString(R.string.confirm_end_visit_reason),
-                    getResources().getString(R.string.confirm_end_visit_reason_message),
-                    false,
-                    getResources().getString(R.string.confirm),
-                    getResources().getString(R.string.cancel),
-                    action -> {
-                        if (action == DialogUtils.CustomDialogListener.POSITIVE_CLICK) {
-                            checkIfAppointmentExistsForVisit(visitID);
-                        }
-                    });
+            dialogUtils.showCommonDialog(this, R.drawable.dialog_close_visit_icon, getResources().getString(R.string.confirm_end_visit_reason), getResources().getString(R.string.confirm_end_visit_reason_message), false, getResources().getString(R.string.confirm), getResources().getString(R.string.cancel), action -> {
+                if (action == DialogUtils.CustomDialogListener.POSITIVE_CLICK) {
+                    checkIfAppointmentExistsForVisit(visitID);
+                }
+            });
         } else {
             triggerEndVisit();
         }
@@ -538,9 +545,7 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
 //        String vitalsUUID = fetchEncounterUuidForEncounterVitals(visitID);
 //        String adultInitialUUID = fetchEncounterUuidForEncounterAdultInitials(visitID);
 
-        endVisit(this, visitID, patient.getUuid(),
-                followUpDate, vitalsUUID, adultInitialUUID, "state", patient.getFirst_name()
-                        + " " + patient.getLast_name().substring(0, 1), PrescriptionActivity.class.getSimpleName());
+        endVisit(this, visitID, patient.getUuid(), followUpDate, vitalsUUID, adultInitialUUID, "state", patient.getFirst_name() + " " + patient.getLast_name().substring(0, 1), PrescriptionActivity.class.getSimpleName());
     }
 
     // permission code - start
@@ -1373,6 +1378,7 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
                 Log.i("TAG", "parseData: rxfin" + rxReturned);
                 medication_txt.setText(Html.fromHtml(getMedicationData()));
                 //checkForDoctor();
+
                 break;
             }
             case UuidDictionary.MEDICAL_ADVICE: {
@@ -1523,7 +1529,7 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
         }
 
         String finalMedicationDataString = "";
-        String titleStart = "<font color="+Color.GRAY+">";
+        String titleStart = "<font color=" + Color.GRAY + ">";
         String titleEnd = "</font>";
 
         StringBuilder medicationData = new StringBuilder();
@@ -1535,13 +1541,13 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
                 medicationData.append(titleEnd);
                 medicationData.append("<br>");
                 medicationData.append(s);
-            }else {
+            } else {
                 medicationData.append(s);
                 medicationData.append("<br>");
                 medicationData.append("<br>");
             }
         }
-        if(medicationData.length() == 0) return "";
+        if (medicationData.length() == 0) return "";
 
         finalMedicationDataString = medicationData.toString();
 
@@ -1670,24 +1676,14 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
     public void registerDownloadPrescription() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("downloadprescription");
-        ContextCompat.registerReceiver(
-                this,
-                downloadPrescriptionService,
-                filter,
-                ContextCompat.RECEIVER_NOT_EXPORTED
-        );
+        ContextCompat.registerReceiver(this, downloadPrescriptionService, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     public void callBroadcastReceiver() {
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             receiver = new NetworkChangeReceiver();
-            ContextCompat.registerReceiver(
-                    this,
-                    receiver,
-                    filter,
-                    ContextCompat.RECEIVER_NOT_EXPORTED
-            );
+            ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
             isReceiverRegistered = true;
         }
     }
@@ -1697,12 +1693,7 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
         super.onStart();
         registerDownloadPrescription();
         callBroadcastReceiver();
-        ContextCompat.registerReceiver(
-                this,
-                mMessageReceiver,
-                new IntentFilter(FILTER),
-                ContextCompat.RECEIVER_NOT_EXPORTED
-        );
+        ContextCompat.registerReceiver(this, mMessageReceiver, new IntentFilter(FILTER), ContextCompat.RECEIVER_NOT_EXPORTED);
 
         //register receiver for internet check
         networkUtils.callBroadcastReceiver();
@@ -1951,39 +1942,28 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
             EditText editText = convertView.findViewById(R.id.editText_mobileno);
             Button sharebtn = convertView.findViewById(R.id.sharebtn);
 
-           /* AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            EditText editText = new EditText(this);
-            editText.setInputType(InputType.TYPE_CLASS_PHONE);
-
-            InputFilter inputFilter = new InputFilter() {
-                @Override
-                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    return null;
-                }
-            };*/
-
-            String partial_whatsapp_presc_url = new UrlModifiers().setwhatsappPresciptionUrl();
+            //String partial_whatsapp_presc_url = new UrlModifiers().setwhatsappPresciptionUrl();
             String prescription_link = new VisitAttributeListDAO().getVisitAttributesList_specificVisit(visitID, PRESCRIPTION_LINK);
-            String whatsapp_url = partial_whatsapp_presc_url.concat(prescription_link);
+            //String whatsapp_url = partial_whatsapp_presc_url.concat(prescription_link);
             editText.setText(patient.getPhone_number());
-
-//                    Spanned hyperlink_whatsapp = HtmlCompat.fromHtml("<a href=" + whatsapp_url + ">Click Here</a>", HtmlCompat.FROM_HTML_MODE_COMPACT);
-
-            //  editText.setFilters(new InputFilter[]{inputFilter, new InputFilter.LengthFilter(15)});
-           /* LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams
-                    (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            editText.setLayoutParams(layoutParams);
-            alertDialog.setView(editText);
-*/
-            //   alertDialog.setMessage(getResources().getString(R.string.enter_mobile_number_to_share_prescription));
+            AlertDialog alertDialog = alertdialogBuilder.create();
+            alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.ui2_rounded_corners_dialog_bg); // show rounded corner for the dialog
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);   // dim backgroun
+            int width = PrescriptionActivity.this.getResources().getDimensionPixelSize(R.dimen.internet_dialog_width);    // set width to your dialog.
+            alertDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
+            alertDialog.show();
             sharebtn.setOnClickListener(v -> {
                 if (!editText.getText().toString().equalsIgnoreCase("")) {
                     String phoneNumber = /*"+91" +*/ editText.getText().toString();
-                    String whatsappMessage = String.format("https://api.whatsapp.com/send?phone=%s&text=%s", phoneNumber, getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here) + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + getString(R.string.and_enter_your_patient_id) + openmrsID_txt.getText().toString());
+                    alertDialog.dismiss();
+                    String smsMsgBody = sms_prescription();
+                    // apiCallForSendSmsRequest(phoneNumber, PrescriptionActivity.this,smsMsgBody);
+                    SMSApiCallManager.checkInternetAndCallApi(phoneNumber, PrescriptionActivity.this, smsMsgBody);
+                  /*  String whatsappMessage = String.format("https://api.whatsapp.com/send?phone=%s&text=%s", phoneNumber, getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here) + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + getString(R.string.and_enter_your_patient_id) + openmrsID_txt.getText().toString());
                     Log.v("whatsappMessage", whatsappMessage);
                     // Toast.makeText(context, R.string.whatsapp_presc_toast, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappMessage)));
-
+*/
                     // isreturningWhatsapp = true;
 
                 } else {
@@ -1992,12 +1972,6 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
 
             });
 
-            AlertDialog alertDialog = alertdialogBuilder.create();
-            alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.ui2_rounded_corners_dialog_bg); // show rounded corner for the dialog
-            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);   // dim backgroun
-            int width = PrescriptionActivity.this.getResources().getDimensionPixelSize(R.dimen.internet_dialog_width);    // set width to your dialog.
-            alertDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
-            alertDialog.show();
 
 //            alertDialog.setPositiveButton(getResources().getString(R.string.share),
 //                    new DialogInterface.OnClickListener() {
@@ -2902,4 +2876,615 @@ public class PrescriptionActivity extends BaseActivity implements NetworkUtils.I
         intent2.putExtra("BUNDLE", args);
         startActivity(intent2);
     }
+
+    private String sms_prescription() {
+        List<PrescribedMedication> prescribedMedicationArrayList = new ArrayList<>();
+
+        String mPatientName1 = patient.getFirst_name() + " " + ((!TextUtils.isEmpty(patient.getMiddle_name())) ? patient.getMiddle_name() : "") + " " + patient.getLast_name();
+        String mPatientName = mPatientName1.substring(0, Math.min(mPatientName1.length(), 30));
+
+        String mPatientDob = patient.getDate_of_birth();
+        String mGender = patient.getGender();
+
+        Calendar c = Calendar.getInstance();
+        System.out.println(getString(R.string.current_time) + c.getTime());
+
+        Calendar today = Calendar.getInstance();
+        Calendar dob = Calendar.getInstance();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = sdf.parse(mPatientDob);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dob.setTime(date);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        Log.d(TAG, "sms_prescription: medication_txt : " + medication_txt);
+        // medication_txt
+        String partial_whatsapp_presc_url = new UrlModifiers().setwhatsappPresciptionUrl();
+        String prescription_link = new VisitAttributeListDAO().getVisitAttributesList_specificVisit(visitID, PRESCRIPTION_LINK);
+        String finalPrescUrl = partial_whatsapp_presc_url + Uri.encode("#") + prescription_link;
+        Log.d(TAG, "sms_prescription: prescription_link : " + prescription_link);
+        String heading = prescription1;
+        String heading2 = prescription2;
+        String heading3 = "<br/>";
+        String medicationData1 = Html.fromHtml(getMedicationDataNew()).toString();
+        String medicationData = medicationData1.substring(0, Math.min(medicationData1.length(), 60));
+        //String rx_web = stringToWeb(medicationData).replace("<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">●", "<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">").replace("<p style=\"font-size:11pt; margin: 0px; padding: 0px;\"></p>", "</p>");
+        String rx_webFinal = medicationData + "...";
+        Log.d(TAG, "sms_prescription: rx_webFinal : "+rx_webFinal);
+
+        String htmlDocument = String.format("<b id=\"heading_1\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b><br>" + "<b id=\"heading_2\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b>" + "<br><br>" +
+
+                        "<b id=\"patient_name\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Patient %s</b><br>" + "<b id=\"patient_details\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Age: %s | Gender: %s  </b>" + "<br><br>" +
+
+                        "<b id=\"rx_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Medication<br>" + "%s </b>"
+
+                /*"</div>"*/, heading, heading2, /*heading3,*/ mPatientName, age, mGender, /*mSdw*/
+//                            address, mPatientOpenMRSID, mDate,
+                !medicationData.isEmpty() ? rx_webFinal : stringToWeb_sms("Not Provided...")) + "<br><br>Download full prescription at " + finalPrescUrl + " --- Powered by Intelehealth";
+
+        Log.d("html", "html:ppp " + Html.fromHtml(htmlDocument));
+
+        return htmlDocument;
+    }
+
+    /*
+        private String sms_prescription() {
+            String mPatientName = patient.getFirst_name() + " " + ((!TextUtils.isEmpty(patient.getMiddle_name())) ? patient.getMiddle_name() : "") + " " + patient.getLast_name();
+            /String mPatientOpenMRSID = patient.getOpenmrs_id();
+            String mPatientDob = patient.getDate_of_birth();
+            String mAddress = ((!TextUtils.isEmpty(patient.getAddress1())) ? patient.getAddress1() + "\n" : "") + ((!TextUtils.isEmpty(patient.getAddress2())) ? patient.getAddress2() : "");
+            String mCityState = patient.getCity_village();
+            String mPhone = (!TextUtils.isEmpty(patient.getPhone_number())) ? patient.getPhone_number() : "";
+            String mState = patient.getState_province();
+            String mCountry = patient.getCountry();
+
+            String mSdw = (!TextUtils.isEmpty(patient.getSdw())) ? patient.getSdw() : "";
+            String mOccupation = patient.getOccupation();
+            String mGender = patient.getGender();
+
+            Calendar c = Calendar.getInstance();
+            System.out.println(getString(R.string.current_time) + c.getTime());
+
+            String[] columnsToReturn = {"startdate"};
+            String visitIDorderBy = "startdate";
+            String visitIDSelection = "uuid = ?";
+            String[] visitIDArgs = {visitUuid};
+            db = AppConstants.inteleHealthDatabaseHelper.getWriteDb();
+            final Cursor visitIDCursor = db.query("tbl_visit", columnsToReturn, visitIDSelection, visitIDArgs, null, null, visitIDorderBy);
+            visitIDCursor.moveToLast();
+            String startDateTime = visitIDCursor.getString(visitIDCursor.getColumnIndexOrThrow("startdate"));
+            visitIDCursor.close();
+            String mDate = DateAndTimeUtils.SimpleDatetoLongDate(startDateTime);
+
+            String mPatHist = patHistory.getValue();
+            if (mPatHist == null) {
+                mPatHist = "";
+            }
+            String mFamHist = famHistory.getValue();
+            if (mFamHist == null) {
+                mFamHist = "";
+            }
+            mHeight = height.getValue();
+            mWeight = weight.getValue();
+            mBP = bpSys.getValue() + "/" + bpDias.getValue();
+            mBloodGlucose = bloodGlucose.getValue();
+            try {
+                JSONObject obj = null;
+                if (hasLicense) {
+                    obj = new JSONObject(Objects.requireNonNullElse(FileUtils.readFileRoot(AppConstants.CONFIG_FILE_NAME, VisitSummaryActivity.this), String.valueOf(FileUtils.encodeJSON(VisitSummaryActivity.this, AppConstants.CONFIG_FILE_NAME)))); //Load the config file
+                } else {
+                    obj = new JSONObject(String.valueOf(FileUtils.encodeJSON(VisitSummaryActivity.this, mFileName)));
+                }//Load the config file
+
+                if (obj.getBoolean("mTemperature")) {
+                    if (obj.getBoolean("mCelsius")) {
+
+                        mTemp = "Temperature(C): " + (!TextUtils.isEmpty(temperature.getValue()) ? temperature.getValue().toString() : "");
+
+                    } else if (obj.getBoolean("mFahrenheit")) {
+
+    //                    mTemp = "Temperature(F): " + temperature.getValue();
+                        mTemp = "Temperature(F): " + (!TextUtils.isEmpty(temperature.getValue()) ? convertCtoF(temperature.getValue()) : "");
+                    }
+                }
+            } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
+            }
+            mresp = resp.getValue();
+            mSPO2 = "SpO2(%): " + (!TextUtils.isEmpty(spO2.getValue()) ? spO2.getValue() : "");
+            String mComplaint = complaint.getValue();
+
+            //Show only the headers of the complaints in the printed prescription
+            String[] complaints = org.apache.commons.lang3.StringUtils.split(mComplaint, Node.bullet_arrow);
+            mComplaint = "";
+            String colon = ":";
+            String mComplaint_new = "";
+            if (complaints != null) {
+                for (String comp : complaints) {
+                    if (!comp.trim().isEmpty()) {
+                        mComplaint = mComplaint + Node.big_bullet + comp.substring(0, comp.indexOf(colon)) + "<br/>";
+
+                    }
+                }
+                if (!mComplaint.isEmpty()) {
+                    mComplaint = mComplaint.substring(0, mComplaint.length() - 2);
+                    mComplaint = mComplaint.replaceAll("<b>", "");
+                    mComplaint = mComplaint.replaceAll("</b>", "");
+                }
+            }
+
+            if (mComplaint.contains("Associated symptoms")) {
+                String[] cc = org.apache.commons.lang3.StringUtils.split(mComplaint, Node.bullet_arrow);
+                for (String compla : cc) {
+                    mComplaint = mComplaint.substring(0, compla.indexOf("Associated symptoms") - 3);
+                }
+            } else {
+
+            }
+
+            if (mComplaint.contains("जुड़े लक्षण")) {
+                String[] cc = org.apache.commons.lang3.StringUtils.split(mComplaint, Node.bullet_arrow);
+                for (String compla : cc) {
+                    mComplaint = mComplaint.substring(0, compla.indexOf("जुड़े लक्षण") - 3);
+                }
+            } else {
+
+            }
+
+            if (mPatientOpenMRSID == null) {
+                mPatientOpenMRSID = getString(R.string.patient_not_registered);
+            }
+
+            String para_open = "<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">";
+            String para_close = "</p>";
+
+            Calendar today = Calendar.getInstance();
+            Calendar dob = Calendar.getInstance();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = null;
+            try {
+                date = sdf.parse(mPatientDob);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            dob.setTime(date);
+
+            int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+            //  String rx_web = stringToWeb_sms(sortMedications(prescribedMedicationArrayList).trim().replace("\n\n", "\n").replace(Node.bullet, ""));
+            String medicationPlan = sortMedications(prescribedMedicationArrayList).replace("\n\n", "\n");
+            String rx_web = stringToWeb(medicationPlan.trim()).replace("<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">●", "<p style=\"font-size:11pt; margin: 0px; padding: 0px;\">").replace("<p style=\"font-size:11pt; margin: 0px; padding: 0px;\"></p>", "</p>");
+
+            String tests_web = stringToWeb_sms(testsReturned.trim().replace("\n\n", "\n").replace(Node.bullet, ""));
+
+            String foodAllergy_web = "";
+            if (foodAllergyReturned != null && !foodAllergyReturned.isEmpty())
+                foodAllergy_web = stringToWeb_sms(foodAllergyReturned.trim().replace("\n\n", "\n")).replace(Node.bullet, "");
+
+            String advice_web = stringToWeb_sms(medicalAdvice_string.trim().replace("\n\n", "\n"));
+            Log.d("Hyperlink", "hyper_print: " + advice_web);
+
+            String diagnosis_web = stringToWeb_sms(diagnosisReturned);
+
+            String followUpDateStr = "";
+            if (followUpDate != null && followUpDate.contains(",")) {
+                String[] spiltFollowDate = followUpDate.split(",");
+                if (spiltFollowDate[0] != null && spiltFollowDate[0].contains("-")) {
+                    String remainingStr = "";
+                    for (int i = 1; i <= spiltFollowDate.length - 1; i++) {
+                        remainingStr = ((!TextUtils.isEmpty(remainingStr)) ? remainingStr + ", " : "") + spiltFollowDate[i];
+                    }
+                    followUpDateStr = parseDateToddMMyyyy(spiltFollowDate[0]) + ", " + remainingStr;
+                } else {
+                    followUpDateStr = followUpDate;
+                }
+            } else {
+                followUpDateStr = followUpDate;
+            }
+
+            String followUp_web = stringToWeb_sms(followUpDateStr);
+
+            String doctor_web = stringToWeb_sms(doctorName);
+
+            String heading = prescription1;
+            String heading2 = prescription2;
+            String heading3 = "<br/>";
+
+            String bp = mBP;
+            if (bp.equals("/") || bp.equals("null/null")) bp = "";
+
+            String address = mState + ((!TextUtils.isEmpty(mPhone)) ? ", " + mPhone : "");
+
+            String fam_hist = mFamHist;
+            String pat_hist = mPatHist;
+
+            if (fam_hist.trim().isEmpty()) {
+                fam_hist = getString(R.string.no_history_family_found);
+            } else {
+                fam_hist = fam_hist.replaceAll(Node.bullet, Node.big_bullet);
+            }
+
+            if (pat_hist.trim().isEmpty()) {
+                pat_hist = getString(R.string.no_history_patient_illness_found);
+            }
+
+            // Generate an HTML document on the fly:
+            String fontFamilyFile = "";
+            if (objClsDoctorDetails != null && objClsDoctorDetails.getFontOfSign() != null) {
+                Log.d("font", "font: " + objClsDoctorDetails.getFontOfSign());
+                if (objClsDoctorDetails.getFontOfSign().toLowerCase().equalsIgnoreCase("youthness")) {
+                    fontFamilyFile = "src: url('file:///android_asset/fonts/Youthness.ttf');";
+                } else if (objClsDoctorDetails.getFontOfSign().toLowerCase().equalsIgnoreCase("asem")) {
+                    fontFamilyFile = "src: url('file:///android_asset/fonts/Asem.otf');";
+                } else if (objClsDoctorDetails.getFontOfSign().toLowerCase().equalsIgnoreCase("arty")) {
+                    fontFamilyFile = "src: url('file:///android_asset/fonts/Arty.otf');";
+                } else if (objClsDoctorDetails.getFontOfSign().toLowerCase().equalsIgnoreCase("almondita")) {
+                    fontFamilyFile = "src: url('file:///android_asset/fonts/almondita.ttf');";
+                }
+            }
+            String font_face = "<style>" + "                @font-face {" + "                    font-family: \"MyFont\";" + fontFamilyFile + "                }" + "            </style>";
+
+            String doctorSign = "";
+            String doctrRegistartionNum = "";
+            // String docDigitallySign = "";
+            String doctorDetailStr = "";
+            if (objClsDoctorDetails != null) {
+                //  docDigitallySign = "Digitally Signed By";
+                doctorSign = objClsDoctorDetails.getTextOfSign();
+
+                doctrRegistartionNum = !TextUtils.isEmpty(objClsDoctorDetails.getRegistrationNumber()) ? getString(R.string.dr_registration_no) + objClsDoctorDetails.getRegistrationNumber() : "";
+                doctorDetailStr =*/
+    /* "<div style=\"text-align:right;margin-right:0px;margin-top:3px;\">" +*//*
+
+
+                    "<span style=\"font-size:12pt; color:#212121;padding: 0px;\">" + objClsDoctorDetails.getName() + "</span><br>" + "<span style=\"font-size:12pt; color:#212121;padding: 0px;\">" + "18003094144" + "</span>" */
+    /*+*//*
+
+
+     */
+/* "<span style=\"font-size:12pt; color:#212121;padding: 0px;\">" + "  " + objClsDoctorDetails.getQualification()
+                    + ", " + objClsDoctorDetails.getSpecialization() + "</span><br>" +
+
+                    "<span style=\"font-size:12pt;color:#212121;padding: 0px;\">" + (!TextUtils.isEmpty(objClsDoctorDetails.getEmailId()) ?
+                    getString(R.string.dr_email) + objClsDoctorDetails.getEmailId() : "") + "</span><br>" +*//*
+
+
+     */
+    /*"</div>"*//*
+;
+
+        }
+
+//        if (isRespiratory) {
+        String htmlDocument = String.format("<b id=\"heading_1\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b><br>" + "<b id=\"heading_2\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b>" + "<br><br>" +
+
+                        */
+    /*"<p id=\"heading_3\" style=\"font-size:12pt; margin: 0px; padding: 0px; text-align: center;\">%s</p>" +*//*
+
+//                                    "<hr style=\"font-size:12pt;\">" + "<br/>" +
+                        */
+    /* doctorDetailStr +*//*
+
+
+
+                        "<b id=\"patient_name\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">%s</b><br>" + "<b id=\"patient_details\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Age: %s | Gender: %s  </b>" + "<br><br>" +
+
+                                  */
+/*  "<p id=\"address_and_contact\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Address and Contact: %s</p>" +
+                                    "<p id=\"visit_details\" style=\"font-size:12pt; margin-top:5px; margin-bottom:0px; padding: 0px;\">Patient Id: %s | Date of visit: %s </p><br>" +*//*
+
+
+     */
+/* "<b><p id=\"vitals_heading\" style=\"font-size:12pt;margin-top:5px; margin-bottom:0px;; padding: 0px;\">Vitals</p></b>" +
+                                    "<p id=\"vitals\" style=\"font-size:12pt;margin:0px; padding: 0px;\">Blood Pressure: %s | Pulse(bpm): %s | %s | Respiratory Rate: %s |  %s </p><br>" +*//*
+
+
+     */
+/* "<b><p id=\"patient_history_heading\" style=\"font-size:11pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Patient History</p></b>" +
+                                    "<p id=\"patient_history\" style=\"font-size:11pt;margin:0px; padding: 0px;\"> %s</p><br>" +
+                                    "<b><p id=\"family_history_heading\" style=\"font-size:11pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Family History</p></b>" +
+                                    "<p id=\"family_history\" style=\"font-size:11pt;margin: 0px; padding: 0px;\"> %s</p><br>" +*//*
+
+
+     */
+/*  "<b><p id=\"complaints_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Presenting complaint(s)</p></b>" +
+                                    para_open + "%s" + para_close + "<br><br>" +*//*
+
+
+                        "<b id=\"diagnosis_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Diagnosis <br>" + "%s </b><br>" + "<b id=\"rx_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Medication(s) plan <br>" + "%s </b><br>" + "<b id=\"tests_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Recommended Investigation(s) <br>" + "%s " + "</b><br>" + "<b id=\"advice_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Advice <br>" + "%s" + "</b><br>" + "<b id=\"follow_up_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Follow Up Date <br>" + "%s" + "</b><br>" +
+                        */
+    /* "<div style=\"text-align:right;margin-right:50px;margin-top:0px;\">" +*//*
+
+
+     */
+    /* "<span style=\"font-size:80pt;font-family: MyFont;padding: 0px;\">" + doctorSign + "</span>" +*//*
+
+
+                        doctorDetailStr
+                */
+    /*"<p style=\"font-size:12pt; margin-top:-0px; padding: 0px;\">" +*//*
+
+
+     */
+    /*  doctrRegistartionNum + "</p>" +*//*
+
+
+     */
+    /*"</div>"*//*
+, heading, heading2, */
+    /*heading3,*//*
+ mPatientName, age, mGender, */
+    /*mSdw*//*
+
+//                            address, mPatientOpenMRSID, mDate,
+
+                            */
+/*(!TextUtils.isEmpty(mHeight)) ? mHeight : "", (!TextUtils.isEmpty(mWeight)) ? mWeight : "",
+                            (!TextUtils.isEmpty(mBMI)) ? mBMI : "",*//*
+
+
+//                            (!TextUtils.isEmpty(bp)) ? bp : "", (!TextUtils.isEmpty(mPulse)) ? mPulse : "", (!TextUtils.isEmpty(mTemp)) ? mTemp : "",
+//                            (!TextUtils.isEmpty(mresp)) ? mresp : "", (!TextUtils.isEmpty(mSPO2)) ? mSPO2 : "",
+
+                */
+    /*pat_hist, fam_hist,*//*
+     */
+    /*mComplaint,*//*
+
+                !diagnosis_web.isEmpty() ? diagnosis_web : stringToWeb_sms("Not Provided"),
+                !rx_web.isEmpty() ? rx_web : stringToWeb_sms("Not Provided"),
+                !tests_web.isEmpty() ? tests_web : stringToWeb_sms("Not Provided"),
+                !advice_web.isEmpty() ? advice_web : stringToWeb_sms("Not Provided"),
+                !followUp_web.isEmpty() ? followUp_web : stringToWeb_sms("Not Provided"),
+                !doctor_web.isEmpty() ? doctor_web : stringToWeb_sms("Not Provided"));
+
+        Log.d("html", "html:ppp " + Html.fromHtml(htmlDocument));
+        //   webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+*/
+/*        } else {
+            htmlDocument =
+                    String.format( "<b id=\"heading_1\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b><br>" +
+                                    "<b id=\"heading_2\" style=\"font-size:5pt; margin: 0px; padding: 0px; text-align: center;\">%s</b>" +
+                                    "<br><br>" +
+
+                                  *//*
+     */
+/*  "<p id=\"heading_3\" style=\"font-size:12pt; margin: 0px; padding: 0px; text-align: center;\">%s</p>" +
+                                    "<hr style=\"font-size:12pt;\">" + "<br/>" +*//*
+     */
+/*
+
+                                    "<b id=\"patient_name\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">%s</b><br>" +
+                                    "<b id=\"patient_details\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Age: %s | Gender: %s  </b>" +
+                                    "<br><br>" +
+
+                                   *//*
+     */
+/* "<p id=\"address_and_contact\" style=\"font-size:12pt; margin: 0px; padding: 0px;\">Address and Contact: %s</p>" +
+                                    "<p id=\"visit_details\" style=\"font-size:12pt; margin-top:5px; margin-bottom:0px; padding: 0px;\">Patient Id: %s | Date of visit: %s </p><br>" +*//*
+     */
+    /*
+
+     *//*
+     */
+/* "<b><p id=\"vitals_heading\" style=\"font-size:12pt;margin-top:5px; margin-bottom:0px;; padding: 0px;\">Vitals</p></b>" +
+                                    "<p id=\"vitals\" style=\"font-size:12pt;margin:0px; padding: 0px;\">Blood Pressure: %s | Pulse(bpm): %s | %s | %s </p><br>" +*//*
+     */
+    /*
+
+     *//*
+     */
+/*"<b><p id=\"patient_history_heading\" style=\"font-size:11pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Patient History</p></b>" +
+                                    "<p id=\"patient_history\" style=\"font-size:11pt;margin:0px; padding: 0px;\"> %s</p><br>" +
+                                    "<b><p id=\"family_history_heading\" style=\"font-size:11pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Family History</p></b>" +
+                                    "<p id=\"family_history\" style=\"font-size:11pt;margin: 0px; padding: 0px;\"> %s</p><br>" +*//*
+     */
+    /*
+
+     *//*
+     */
+/* "<b><p id=\"complaints_heading\" style=\"font-size:12pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Presenting complaint(s)</p></b>" +
+                                    para_open + "%s" + para_close + "<br><br>" +*//*
+     */
+/*
+
+                                    "<b id=\"diagnosis_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Diagnosis <br>" +
+                                    "%s </b><br>" +
+                                    "<b id=\"rx_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Medication(s) plan <br>" +
+                                    "%s </b><br>" +
+                                    "<b id=\"tests_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Recommended Investigation(s) <br>" +
+                                    "%s " + "</b><br>" +
+                                    "<b id=\"advice_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Advice <br>" +
+                                    "%s" + "</b><br>" +
+                                    "<b id=\"follow_up_heading\" style=\"font-size:15pt;margin-top:5px; margin-bottom:0px; padding: 0px;\">Follow Up Date <br>" +
+                                    "%s" + "</b><br>" +
+                                    "<div style=\"text-align:right;margin-right:50px;margin-top:0px;\">" +
+
+                                   *//*
+     */
+    /* "<span style=\"font-size:80pt;font-family: MyFont;padding: 0px;\">" + doctorSign + "</span><br>" +*//*
+     */
+/*
+                                    doctorDetailStr +
+                                    "<span style=\"font-size:12pt; margin-top:5px; padding: 0px;\">" +
+
+                                   *//*
+     */
+    /* + doctrRegistartionNum + "</span>" +*//*
+     */
+/*
+                                    "</div>"
+
+                            , heading, heading2,*//*
+     */
+    /* heading3,*//*
+     */
+    /* mPatientName, age, mGender, *//*
+     */
+    /*mSdw*//*
+     */
+    /* *//*
+     */
+    /*address, mPatientOpenMRSID, mDate,*//*
+     */
+    /*
+     *//*
+     */
+/*(!TextUtils.isEmpty(mHeight)) ? mHeight : "", (!TextUtils.isEmpty(mWeight)) ? mWeight : "",
+                            (!TextUtils.isEmpty(mBMI)) ? mBMI : "",*//*
+     */
+    /*
+
+     *//*
+     */
+/* (!TextUtils.isEmpty(bp)) ? bp : "", (!TextUtils.isEmpty(mPulse)) ? mPulse : "", (!TextUtils.isEmpty(mTemp)) ? mTemp : "",
+                            (!TextUtils.isEmpty(mSPO2)) ? mSPO2 : "",*//*
+     */
+    /*
+
+     *//*
+     */
+    /*pat_hist, fam_hist,*//*
+     */
+    /* *//*
+     */
+    /*mComplaint,*//*
+     */
+/*
+
+                            diagnosis_web, rx_web, tests_web, advice_web, followUp_web, doctor_web);
+            Log.d("html","html:ppp "+ Html.fromHtml(htmlDocument));
+            // webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+        }*//*
+
+        //   webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+
+        return htmlDocument;
+    }
+*/
+    private String stringToWeb_sms(String input) {
+        String formatted = "";
+        if (input != null && !input.isEmpty()) {
+
+            String para_open = "<b style=\"font-size:11pt; margin: 0px; padding: 0px;\">";
+            String para_close = "";
+            formatted = para_open + "- " + input.replaceAll("\n", para_close + para_open + "- ") + para_close;
+        }
+        return formatted;
+    }
+
+/*
+    private void apiCallForSendSmsRequest(String phoneNumber, Context context, String smsMsgBody) {
+        Log.d(TAG, "apiCallForSendSmsRequest: phoneNumber :" + phoneNumber);
+        Log.d(TAG, "apiCallForSendSmsRequest: smsMsgBody :" + smsMsgBody);
+
+        CustomProgressDialog customProgressDialog = new CustomProgressDialog(context);
+        customProgressDialog.show(context.getResources().getString(R.string.please_wait));
+
+        //String serverUrl = BuildConfig.SERVER_URL + "/openmrs/ws/rest/v1/provider/" + sessionManager.getProviderID() + "/"; //${target_provider_uuid}/attribute/${target_provider_attribute_uuid}
+        SendSMSRequestModel sendSMSRequestModel = new SendSMSRequestModel();
+        sendSMSRequestModel.setModule(AppConstants.MODULE);
+        sendSMSRequestModel.setApikey(AppConstants.APIKEY);
+        sendSMSRequestModel.setFrom(AppConstants.FROM);
+        sendSMSRequestModel.setTo(phoneNumber);
+        sendSMSRequestModel.setCtid(AppConstants.CTID);
+        sendSMSRequestModel.setMsg(Html.fromHtml(smsMsgBody).toString());
+
+        Log.d(TAG, "apiCallForSendSmsRequest: reqmodel : " + new Gson().toJson(sendSMSRequestModel));
+
+        String serverUrl = AppConstants.SMS_API_REQUEST_URL;
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        ApiClient.changeApiBaseUrl(serverUrl);
+        ApiInterface apiService = ApiClient.createService(ApiInterface.class);
+        Observable<JSONObject> smsRequest = apiService.sendSMS(serverUrl, sendSMSRequestModel.getModule(),
+                sendSMSRequestModel.getApikey(), sendSMSRequestModel.getTo(), sendSMSRequestModel.getFrom(),
+                sendSMSRequestModel.getMsg(), sendSMSRequestModel.getCtid());
+        smsRequest.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<JSONObject>() {
+            @Override
+            public void onNext(JSONObject jsonObject) {
+                Log.d(TAG, "onNext: response sms : " + new Gson().toJson(jsonObject));
+                customProgressDialog.dismiss();
+                try {
+                    String status = jsonObject.getString("Status");
+                    if (status.equalsIgnoreCase("Success")) {
+                        Toast.makeText(PrescriptionActivity.this, ContextCompat.getString(PrescriptionActivity.this, R.string.sms_sent), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(PrescriptionActivity.this, ContextCompat.getString(PrescriptionActivity.this, R.string.request_failed), Toast.LENGTH_SHORT).show();
+                        // Response is not successful
+                        // Handle the error case
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    // Handle JSON parsing error
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                customProgressDialog.dismiss();
+
+                Logger.logD(TAG, e.getMessage());
+                Toast.makeText(PrescriptionActivity.this, ContextCompat.getString(PrescriptionActivity.this, R.string.try_later), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onComplete() {
+                customProgressDialog.dismiss();
+
+                Logger.logD(TAG, "completed");
+            }
+        });
+    }
+*/
+  /*  Intelehealth Helpline, Telemedicine Project
+            ePrescription
+    Patient Kaveri
+    Age: 23 | Gender: F
+            Medication
+    ParacetamolNicip...
+    Download  full prescription at Intelehealthorgtest --- Powered by Intelehealth*/
+
+    private String getMedicationDataNew() {
+        if (rxReturned.isEmpty()) {
+            return "";
+        }
+
+
+        String finalMedicationDataString = "";
+        String titleStart = "<font color=" + Color.GRAY + ">";
+        String titleEnd = "</font>";
+
+        StringBuilder medicationData = new StringBuilder();
+        String[] medicationDataArray = rxReturned.split("\n");
+        for (String s : medicationDataArray) {
+            if (!s.contains(":")) {
+                medicationData.append(titleStart);
+                medicationData.append(getString(R.string.additional_instruction));
+                medicationData.append(titleEnd);
+                //medicationData.append(",");
+                medicationData.append(s);
+            } else {
+                medicationData.append(s);
+                medicationData.append(", ");
+                ///medicationData.append("<br>");
+            }
+        }
+        if (medicationData.length() == 0) return "";
+
+        finalMedicationDataString = medicationData.toString();
+        Log.d(TAG, "getMedicationDataNew: finalMedicationDataString : "+finalMedicationDataString);
+
+        return finalMedicationDataString;
+    }
+
 }
