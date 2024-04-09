@@ -6,16 +6,36 @@ import com.google.gson.annotations.SerializedName;
 
 public class CallFlowResponseData {
     @SerializedName("CallStartTime")
-    private String callStartTime;
-    @SerializedName("Receiver")
-    private String Receiver;
+    private String CallStartTime;
+
+    @SerializedName("CallType")
+    private String CallType;
+
+    @SerializedName("PatientNumber")
+    private String PatientNumber;
 
     public String getCallStartTime() {
-        return callStartTime;
+        return CallStartTime;
     }
 
     public void setCallStartTime(String callStartTime) {
-        this.callStartTime = callStartTime;
+        CallStartTime = callStartTime;
+    }
+
+    public String getCallType() {
+        return CallType;
+    }
+
+    public void setCallType(String callType) {
+        CallType = callType;
+    }
+
+    public String getPatientNumber() {
+        return PatientNumber;
+    }
+
+    public void setPatientNumber(String patientNumber) {
+        PatientNumber = patientNumber;
     }
 
     public String getReceiver() {
@@ -35,17 +55,31 @@ public class CallFlowResponseData {
     }
 
     public String getRecordingURL() {
-        return recordingURL;
+        return RecordingURL;
     }
 
     public void setRecordingURL(String recordingURL) {
-        this.recordingURL = recordingURL;
+        RecordingURL = recordingURL;
     }
+
+    public String getRecord_id() {
+        return record_id;
+    }
+
+    public void setRecord_id(String record_id) {
+        this.record_id = record_id;
+    }
+
+    @SerializedName("Receiver")
+    private String Receiver;
 
     @SerializedName("ReceiverName")
     private String ReceiverName;
     @SerializedName("RecordingURL")
-    private String recordingURL;
+    private String RecordingURL;
+
+    @SerializedName("record_id")
+    private String record_id;
 
 
 }

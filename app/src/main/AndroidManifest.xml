@@ -48,24 +48,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute, LockedOrientationActivity"
         tools:replace="allowBackup">
-        <activity
-            android:name=".activities.callflow.MissedCallActivityK"
-            android:exported="false" />
+
         <activity
             android:name=".activities.callflow.NewMissedCallActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".activities.callflow.NewCallRecordingActiivty"
-            android:exported="false" />
-        <activity
-            android:name=".activities.callflow.MissedCallActivityOld"
-            android:exported="false"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".activities.callflow.AudioPlayerActivity"
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
@@ -74,32 +59,7 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".activities.callflow.PlayAudioActivityTemp"
-            android:exported="true">
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity
-            android:name=".activities.callflow.BaseActionBarActivity"
-            android:exported="false" />
-        <!--
-         <activity
-            android:name=".activities.PlayAudioActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
         <activity
             android:name=".profile.MyProfileActivity"
             android:exported="true"

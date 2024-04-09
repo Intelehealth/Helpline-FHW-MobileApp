@@ -274,7 +274,76 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.Myholder> {
                 }
                 });
     }
+    private void sharePresc(final PrescriptionModel model) {
+        MaterialAlertDialogBuilder alertdialogBuilder = new MaterialAlertDialogBuilder(context);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        View convertView = inflater.inflate(R.layout.dialog_sharepresc, null);
+        alertdialogBuilder.setView(convertView);
+        EditText editText = convertView.findViewById(R.id.editText_mobileno);
+        Button sharebtn = convertView.findViewById(R.id.sharebtn);
+        String partial_whatsapp_presc_url = new UrlModifiers().setwhatsappPresciptionUrl();
+        String prescription_link = new VisitAttributeListDAO().getVisitAttributesList_specificVisit(model.getVisitUuid(), PRESCRIPTION_LINK);
 
+      /*  if(model.getPhone_number()!=null)
+            editText.setText(model.getPhone_number());*/
+
+        try {
+            String phoneNo = phoneNumber(model.getPatientUuid());
+            editText.setText(phoneNo);
+        } catch (DAOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+      /*  sharebtn.setOnClickListener(v -> {
+            if (!editText.getText().toString().equalsIgnoreCase("")) {
+                String phoneNumber = *//*"+91" +*//* editText.getText().toString();
+                String whatsappMessage = String.format("https://api.whatsapp.com/send?phone=%s&text=%s",
+                        phoneNumber, context.getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here)
+                                + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + context.getResources().getString(R.string.and_enter_your_patient_id)
+                                + model.getOpenmrs_id());
+                Log.v("whatsappMessage", whatsappMessage);
+                context.startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(whatsappMessage)));
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.please_enter_mobile_number),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        });*/
+
+        AlertDialog alertDialog = alertdialogBuilder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.ui2_rounded_corners_dialog_bg); // show rounded corner for the dialog
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);   // dim backgroun
+        int width = context.getResources().getDimensionPixelSize(R.dimen.internet_dialog_width);    // set width to your dialog.
+        alertDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
+        alertDialog.show();
+
+        sharebtn.setOnClickListener(v -> {
+            if (!editText.getText().toString().equalsIgnoreCase("")) {
+                String phoneNumber = /*"+91" +*/ editText.getText().toString();
+                alertDialog.dismiss();
+                SMSApiCallManager smsApiCallManager = new SMSApiCallManager();
+                String smsMsgBody = smsApiCallManager.sms_prescription(model, context);
+                // apiCallForSendSmsRequest(phoneNumber, PrescriptionActivity.this,smsMsgBody);
+                SMSApiCallManager.checkInternetAndCallApi(phoneNumber, context, smsMsgBody);
+                  /*  String whatsappMessage = String.format("https://api.whatsapp.com/send?phone=%s&text=%s", phoneNumber, getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here) + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + getString(R.string.and_enter_your_patient_id) + openmrsID_txt.getText().toString());
+                    Log.v("whatsappMessage", whatsappMessage);
+                    // Toast.makeText(context, R.string.whatsapp_presc_toast, Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappMessage)));
+*/
+                // isreturningWhatsapp = true;
+
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.please_enter_mobile_number), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+    }
+
+
+/*
     private void sharePresc(final PrescriptionModel model) {
         MaterialAlertDialogBuilder alertdialogBuilder = new MaterialAlertDialogBuilder(context);
         final LayoutInflater inflater = LayoutInflater.from(context);
@@ -296,7 +365,9 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.Myholder> {
 
         sharebtn.setOnClickListener(v -> {
             if (!editText.getText().toString().equalsIgnoreCase("")) {
-                String phoneNumber = /*"+91" +*/ editText.getText().toString();
+                String phoneNumber = */
+/*"+91" +*//*
+ editText.getText().toString();
                 String whatsappMessage = String.format("https://api.whatsapp.com/send?phone=%s&text=%s",
                         phoneNumber, context.getResources().getString(R.string.hello_thankyou_for_using_intelehealth_app_to_download_click_here)
                                 + partial_whatsapp_presc_url + Uri.encode("#") + prescription_link + context.getResources().getString(R.string.and_enter_your_patient_id)
@@ -318,5 +389,6 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.Myholder> {
         alertDialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
         alertDialog.show();
     }
+*/
 
 }

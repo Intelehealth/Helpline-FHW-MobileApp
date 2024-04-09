@@ -115,7 +115,7 @@ public class MissedCallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle;
+        TextView textViewTitle,tvTypeOfCall;
         TextView textViewDescription;
         CardView cardMissedCall;
         ImageView ivCall;
@@ -128,11 +128,13 @@ public class MissedCallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             cardMissedCall = itemView.findViewById(R.id.card_missed_call);
             ivCall = itemView.findViewById(R.id.iv_call_missed_call);
             ivWhatsapp = itemView.findViewById(R.id.iv_call_whatsapp);
+            tvTypeOfCall = itemView.findViewById(R.id.tv_type_of_call_recording);
         }
 
         public void onBind(MissedCallsResponseDataModel item) {
             textViewTitle.setText(item.getPatientNumber());
             textViewDescription.setText(DateTimeUtils.convertDateToDisplayFormatInCall(item.getCallTime()));
+            tvTypeOfCall.setText(item.getCallType());
         }
     }
 

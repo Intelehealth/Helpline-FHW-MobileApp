@@ -20,9 +20,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="-5dp"
             android:layout_marginHorizontal="@dimen/list_container_padding"
-            android:layout_marginVertical="@dimen/list_container_padding">
+            android:layout_marginVertical="@dimen/list_container_padding"
+            android:paddingBottom="-5dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_call_details"
@@ -42,6 +42,17 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tv_type_of_call"
+                    style="@style/TextviewInputTitleStyle"
+                    android:layout_width="0dp"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:hint="Call type"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call" />
+
+                <TextView
                     android:id="@+id/tv_date_time_call"
                     style="@style/TextviewInputTitleStyle"
                     android:layout_width="0dp"
@@ -49,17 +60,17 @@
                     android:layout_marginTop="2dp"
                     android:hint="Date Time"
                     app:drawableStartCompat="@drawable/custom_calendar_start"
-                    app:layout_constraintBottom_toBottomOf="@+id/layout_views_recording"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_type_of_call" />
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_views_recording"
                     android:layout_width="wrap_content"
+                    android:layout_marginTop="-2dp"
                     android:layout_height="@dimen/iv_row_call_icons"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_patient_name_call">
+                    app:layout_constraintTop_toBottomOf="@+id/tv_type_of_call">
 
                     <ImageView
                         android:id="@+id/iv_play_audio"
@@ -87,33 +98,34 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <SeekBar
                 android:id="@+id/seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:indeterminate="false"
                 android:max="100"
+                android:paddingStart="@dimen/seekbar_margin"
+                android:paddingEnd="@dimen/seekbar_margin"
                 android:progress="0"
                 android:progressDrawable="@drawable/custom_seekbar"
                 android:thumb="@drawable/thumb"
-                android:paddingEnd="@dimen/seekbar_margin"
-                android:paddingStart="@dimen/seekbar_margin"
-                android:layout_centerInParent="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_call_details"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_call_details" />
 
-         <!--   <SeekBar
-                android:id="@+id/seekbar"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:thumb="@null"
-                android:layout_centerInParent="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_call_details" />-->
+            <!--   <SeekBar
+                   android:id="@+id/seekbar"
+                   android:layout_width="match_parent"
+                   android:layout_height="10dp"
+                   android:thumb="@null"
+                   android:layout_centerInParent="true"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintTop_toBottomOf="@+id/layout_call_details" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

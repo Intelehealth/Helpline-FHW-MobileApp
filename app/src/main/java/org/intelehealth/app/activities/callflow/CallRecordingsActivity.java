@@ -114,9 +114,7 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
                 if (!isLoading && !isLastPage) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= 10) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= 10) {
                         loadMoreItems();
                     }
                 }
@@ -130,8 +128,7 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
 
     private void apiCallForGetListOfRecordedCalls(Context context, int pageNumber) {
         String finalURL = BuildConfig.SERVER_URL + "/recordings/" + sessionManager.getLoginHWMobileNumber() + "/" + pageNumber;
-        if (sessionManager.getLoginHWMobileNumber().isEmpty())
-            return;
+        if (sessionManager.getLoginHWMobileNumber().isEmpty()) return;
         //CustomProgressDialog customProgressDialog = new CustomProgressDialog(context);
         //customProgressDialog.show(context.getResources().getString(R.string.please_wait));
         showProgressbarForInitialLoading(false);
@@ -139,45 +136,42 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
         ApiInterface apiService = ApiClient.createService(ApiInterface.class);
         try {
             Observable<CallFlowResponseModelClass> resultsObservable = apiService.getCallRecordings(finalURL, AppConstants.AUTH_HEADER_CALL_FLOW);
-            resultsObservable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DisposableObserver<CallFlowResponseModelClass>() {
-                        @Override
-                        public void onNext(CallFlowResponseModelClass res) {
-                            //customProgressDialog.dismiss();
-                            showProgressbarForInitialLoading(true);
-                            isFirstTimeLoading = false;
-                            Log.d(TAG, "onNext: missed data 1 : " + new Gson().toJson(res));
-                            if (!res.getStatus().isEmpty() && res.getStatus().equalsIgnoreCase("ok") && res.getData() != null && res.getData().size() != 0) {
-                                updateDataInView(res.getData());
-                            } else {
-                                isLastPage = true;
-                                //no data
-                                manageUIVisibility(false);
-                            }
-                            isLoading = false; // Reset loading flag
-                            recordedCallsAdapter.removeLoading(); // Remove loading item after data is loaded
-                        }
+            resultsObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<CallFlowResponseModelClass>() {
+                @Override
+                public void onNext(CallFlowResponseModelClass res) {
+                    //customProgressDialog.dismiss();
+                    showProgressbarForInitialLoading(true);
+                    isFirstTimeLoading = false;
+                    Log.d(TAG, "onNext: missed data 1 : " + new Gson().toJson(res));
+                    if (!res.getStatus().isEmpty() && res.getStatus().equalsIgnoreCase("ok") && res.getData() != null && res.getData().size() != 0) {
+                        updateDataInView(res.getData());
+                    } else {
+                        isLastPage = true;
+                        //no data
+                        manageUIVisibility(false);
+                    }
+                    isLoading = false; // Reset loading flag
+                    recordedCallsAdapter.removeLoading(); // Remove loading item after data is loaded
+                }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            isLoading = false;
-                            isFirstTimeLoading = false;
-                            showProgressbarForInitialLoading(true);
-                            //customProgressDialog.dismiss();
-                            Toast.makeText(context, context.getResources().getString(R.string.try_later), Toast.LENGTH_LONG).show();
-                            recordedCallsAdapter.removeLoading(); // Remove loading item in case of error
-                        }
+                @Override
+                public void onError(Throwable e) {
+                    isLoading = false;
+                    isFirstTimeLoading = false;
+                    showProgressbarForInitialLoading(true);
+                    //customProgressDialog.dismiss();
+                    Toast.makeText(context, context.getResources().getString(R.string.try_later), Toast.LENGTH_LONG).show();
+                    recordedCallsAdapter.removeLoading(); // Remove loading item in case of error
+                }
 
-                        @Override
-                        public void onComplete() {
-                            isFirstTimeLoading = false;
-                            // customProgressDialog.dismiss();
-                            showProgressbarForInitialLoading(true);
+                @Override
+                public void onComplete() {
+                    isFirstTimeLoading = false;
+                    // customProgressDialog.dismiss();
+                    showProgressbarForInitialLoading(true);
 
-                        }
-                    });
+                }
+            });
         } catch (IllegalArgumentException e) {
         }
 
@@ -190,15 +184,16 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
         manageUIVisibility(true);
     }
 
-  /*  private void loadMoreItems() {
+    /*  private void loadMoreItems() {
+          isLoading = true; // Set loading to true before making API call
+          apiCallForGetListOfRecordedCalls(CallRecordingsActivity.this, pageNumber);
+      }*/
+    private void loadMoreItems() {
         isLoading = true; // Set loading to true before making API call
+        recordedCallsAdapter.addLoading(); // Add loading item to show progress bar
         apiCallForGetListOfRecordedCalls(CallRecordingsActivity.this, pageNumber);
-    }*/
-  private void loadMoreItems() {
-      isLoading = true; // Set loading to true before making API call
-      recordedCallsAdapter.addLoading(); // Add loading item to show progress bar
-      apiCallForGetListOfRecordedCalls(CallRecordingsActivity.this, pageNumber);
-  }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -261,16 +256,17 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
         }
 
     }
+
     private void showProgressbarForInitialLoading(boolean wantToDismiss) {
-      if(isFirstTimeLoading){
-          binding.layoutLoader.getRoot().setVisibility(View.VISIBLE);
-      }else{
-          binding.layoutLoader.getRoot().setVisibility(View.GONE);
-      }
+        if (isFirstTimeLoading) {
+            binding.layoutLoader.getRoot().setVisibility(View.VISIBLE);
+        } else {
+            binding.layoutLoader.getRoot().setVisibility(View.GONE);
+        }
         if (wantToDismiss) {
             int visibility = binding.layoutLoader.getRoot().getVisibility();
             boolean isProgressBarVisible = (visibility == View.VISIBLE);
-            if (isProgressBarVisible){
+            if (isProgressBarVisible) {
                 binding.layoutLoader.getRoot().setVisibility(View.GONE);
                 binding.layoutLoader.getRoot().setVisibility(View.GONE);
             }

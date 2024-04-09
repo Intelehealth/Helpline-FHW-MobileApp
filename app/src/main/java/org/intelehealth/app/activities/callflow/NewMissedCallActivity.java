@@ -264,28 +264,28 @@ public class NewMissedCallActivity extends AppCompatActivity implements NetworkU
         }
     }
 
-   /* private void showProgressbarForInitialLoading(boolean wantToDismiss) {
-        binding.progressBarMissed.setVisibility(isFirstTimeLoading ? View.VISIBLE : View.GONE);
-        if (wantToDismiss) {
-            int visibility = binding.progressBarMissed.getVisibility();
-            boolean isProgressBarVisible = (visibility == View.VISIBLE);
-            if (isProgressBarVisible)
-                binding.progressBarMissed.setVisibility(View.GONE);
+    /* private void showProgressbarForInitialLoading(boolean wantToDismiss) {
+         binding.progressBarMissed.setVisibility(isFirstTimeLoading ? View.VISIBLE : View.GONE);
+         if (wantToDismiss) {
+             int visibility = binding.progressBarMissed.getVisibility();
+             boolean isProgressBarVisible = (visibility == View.VISIBLE);
+             if (isProgressBarVisible)
+                 binding.progressBarMissed.setVisibility(View.GONE);
+         }
+     }*/
+    private void showProgressbarForInitialLoading(boolean wantToDismiss) {
+        if (isFirstTimeLoading) {
+            binding.layoutLoader.getRoot().setVisibility(View.VISIBLE);
+        } else {
+            binding.layoutLoader.getRoot().setVisibility(View.GONE);
         }
-    }*/
-   private void showProgressbarForInitialLoading(boolean wantToDismiss) {
-       if(isFirstTimeLoading){
-           binding.layoutLoader.getRoot().setVisibility(View.VISIBLE);
-       }else{
-           binding.layoutLoader.getRoot().setVisibility(View.GONE);
-       }
-       if (wantToDismiss) {
-           int visibility = binding.layoutLoader.getRoot().getVisibility();
-           boolean isProgressBarVisible = (visibility == View.VISIBLE);
-           if (isProgressBarVisible){
-               binding.layoutLoader.getRoot().setVisibility(View.GONE);
-               binding.layoutLoader.getRoot().setVisibility(View.GONE);
-           }
-       }
-   }
+        if (wantToDismiss) {
+            int visibility = binding.layoutLoader.getRoot().getVisibility();
+            boolean isProgressBarVisible = (visibility == View.VISIBLE);
+            if (isProgressBarVisible) {
+                binding.layoutLoader.getRoot().setVisibility(View.GONE);
+                binding.layoutLoader.getRoot().setVisibility(View.GONE);
+            }
+        }
+    }
 }

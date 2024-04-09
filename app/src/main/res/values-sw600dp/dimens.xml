@@ -929,5 +929,6 @@
     <dimen name="row_item_container_padding">22dp</dimen>
     <dimen name="seekbar_margin">8dp</dimen>
     <dimen name="seekbar_height">10dp</dimen>
+    <dimen name="view_margin_top">6dp</dimen>
 
 </resources>

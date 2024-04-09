@@ -70,22 +70,23 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ProgressHolder progressHolder = (ProgressHolder) holder;
             final Handler handler = new Handler();
 
-              Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (isLoading) {
-                                progressHolder.progressBarLoader.setVisibility(View.VISIBLE);
-                                progressHolder.layoutProgress.setVisibility(View.VISIBLE);
-                            } else {
-                                progressHolder.progressBarLoader.setVisibility(View.GONE);
-                                progressHolder.layoutProgress.setVisibility(View.GONE);
-                            }                        } catch (IllegalStateException ed) {
-                            ed.printStackTrace();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (isLoading) {
+                            progressHolder.progressBarLoader.setVisibility(View.VISIBLE);
+                            progressHolder.layoutProgress.setVisibility(View.VISIBLE);
+                        } else {
+                            progressHolder.progressBarLoader.setVisibility(View.GONE);
+                            progressHolder.layoutProgress.setVisibility(View.GONE);
                         }
+                    } catch (IllegalStateException ed) {
+                        ed.printStackTrace();
                     }
-                };
-                handler.postDelayed(runnable, 3000);
+                }
+            };
+            handler.postDelayed(runnable, 3000);
 
         }
 
@@ -94,8 +95,9 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private void bindData(RecyclerView.ViewHolder holder, int position) {
         AudioViewHolder viewHolder = ((CallRecordingsAdapter.AudioViewHolder) holder);
         CallFlowResponseData callFlowResponseData = mAudioList.get(position);
-        viewHolder.tvName.setText(callFlowResponseData.getReceiver());
+        viewHolder.tvName.setText(callFlowResponseData.getPatientNumber());
         viewHolder.tvDateTime.setText(DateTimeUtils.convertDateToDisplayFormatInCall(callFlowResponseData.getCallStartTime()));
+        viewHolder.tvTypeOfCall.setText(callFlowResponseData.getCallType());
 
         viewHolder.progressBarAudio.setVisibility(View.GONE);
 
@@ -139,8 +141,9 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Log.d("TAG", "getItemViewType: ");
         return position == mAudioList.size() ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
     }
+
     public static class AudioViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvDateTime;
+        TextView tvName, tvDateTime, tvTypeOfCall;
         SeekBar seekBar;
         ImageView buttonPlay;
         ProgressBar progressBarAudio;
@@ -152,7 +155,7 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             seekBar = itemView.findViewById(R.id.seekbar);
             buttonPlay = itemView.findViewById(R.id.iv_play_audio);
             progressBarAudio = itemView.findViewById(R.id.progressBar_recording);
-
+            tvTypeOfCall = itemView.findViewById(R.id.tv_type_of_call);
         }
        /* public void onBind(MissedCallsResponseDataModel item) {
             textViewTitle.setText(item.getNoanswer());
@@ -289,39 +292,39 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-   /* private void updateSeekBar(AudioViewHolder holder) {
+    /* private void updateSeekBar(AudioViewHolder holder) {
+         if (mMediaPlayer != null) {
+             holder.seekBar.setMax(mMediaPlayer.getDuration());
+             holder.seekBar.setProgress(mMediaPlayer.getCurrentPosition());
+
+             // Update seek bar progress every 100 milliseconds
+             new Handler().postDelayed(() -> updateSeekBar(holder), 100);
+             //holder.seekBar.postDelayed(new SeekBarUpdater(holder), 100);
+
+         }
+     }*/
+    private void updateSeekBar(AudioViewHolder holder) {
         if (mMediaPlayer != null) {
             holder.seekBar.setMax(mMediaPlayer.getDuration());
             holder.seekBar.setProgress(mMediaPlayer.getCurrentPosition());
 
-            // Update seek bar progress every 100 milliseconds
-            new Handler().postDelayed(() -> updateSeekBar(holder), 100);
-            //holder.seekBar.postDelayed(new SeekBarUpdater(holder), 100);
+            Runnable seekBarUpdater = new Runnable() {
+                @Override
+                public void run() {
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        holder.seekBar.setProgress(mMediaPlayer.getCurrentPosition());
+                        // Schedule the next update after a short delay
+                        holder.seekBar.postDelayed(this, 100);
+                    }
+                }
+            };
 
+            // Remove any existing callbacks to avoid duplicates
+            holder.seekBar.removeCallbacks(seekBarUpdater);
+            // Schedule the first update
+            holder.seekBar.postDelayed(seekBarUpdater, 100);
         }
-    }*/
-   private void updateSeekBar(AudioViewHolder holder) {
-       if (mMediaPlayer != null) {
-           holder.seekBar.setMax(mMediaPlayer.getDuration());
-           holder.seekBar.setProgress(mMediaPlayer.getCurrentPosition());
-
-           Runnable seekBarUpdater = new Runnable() {
-               @Override
-               public void run() {
-                   if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                       holder.seekBar.setProgress(mMediaPlayer.getCurrentPosition());
-                       // Schedule the next update after a short delay
-                       holder.seekBar.postDelayed(this, 100);
-                   }
-               }
-           };
-
-           // Remove any existing callbacks to avoid duplicates
-           holder.seekBar.removeCallbacks(seekBarUpdater);
-           // Schedule the first update
-           holder.seekBar.postDelayed(seekBarUpdater, 100);
-       }
-   }
+    }
 
     private class SeekBarUpdater implements Runnable {
         private AudioViewHolder mHolder;
