@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">इंटेलेहेल्थ</string>
+    <string name="app_name" translatable="false">इंटेलेहेल्थ हेल्पलाइन</string>
     <string name="notification_title">इंटेलेहेल्थ</string>
     //Generic
     <string name="generic_the_flipping_word_next" translatable="false">आगे</string>

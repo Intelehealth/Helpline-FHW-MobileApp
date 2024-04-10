@@ -118,6 +118,7 @@
                         android:layout_height="@dimen/patdetail_profile_imgview_14sp"
                         android:layout_margin="2dp"
                         android:elevation="0dp"
+                        android:visibility="gone"
                         app:cardCornerRadius="40dp">
 
                         <ImageView
@@ -129,6 +130,7 @@
 
                     <!--Name and SubTitle-->
                     <LinearLayout
+                        android:id="@+id/layout_patient_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/fu_margin_start"
@@ -155,6 +157,56 @@
                             android:textColor="@null"
                             android:textSize="@dimen/find_patient_hint_size" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/ib_call_btn_patient"
+                            android:layout_width="@dimen/iv_call_icons_size"
+                            android:layout_height="@dimen/iv_call_icons_size"
+                            android:background="@null"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_icon8_phone" />
+
+                        <ImageButton
+                            android:id="@+id/ib_whatsapp_btn_patient"
+                            android:layout_width="@dimen/iv_call_icons_size"
+                            android:layout_height="@dimen/iv_call_icons_size"
+                            android:layout_marginStart="@dimen/fu_margin_start"
+                            android:background="@null"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_icon8_whatsapp" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true">
+
+                        <ImageView
+                            android:id="@+id/ib_call_patient"
+                            android:layout_width="@dimen/iv_call_icons_size"
+                            android:layout_height="@dimen/iv_call_icons_size"
+                            android:layout_marginEnd="12dp"
+                            android:layout_toStartOf="@+id/ib_whatsapp_patient"
+                            android:src="@drawable/ui2_ic_icon_call" />
+
+                        <ImageView
+                            android:id="@+id/ib_whatsapp_patient"
+                            android:layout_width="@dimen/iv_call_icons_size"
+                            android:layout_height="@dimen/iv_call_icons_size"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/ui2_ic_icon_whatsapp_active" />
+
+                    </RelativeLayout>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 

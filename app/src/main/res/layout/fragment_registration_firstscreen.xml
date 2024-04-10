@@ -408,7 +408,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="3sp"
-                    android:text="@string/phone_number"
+                    android:text="@string/phone_number_mandatory"
                     android:textAppearance="@style/blur_txtview"
                     android:textSize="@null" />
 
@@ -439,7 +439,7 @@
                         android:background="@drawable/edittext_border"
                         android:digits="1234567890"
                         android:hint="@string/phone_number"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         android:paddingStart="@dimen/fu_margin_start"
                         android:paddingTop="@dimen/margin_10"
                         android:paddingEnd="@dimen/fu_card_margin_updown"
@@ -454,13 +454,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="@dimen/hamburger_margin_start"
+                    android:layout_marginBottom="@dimen/hamburger_margin_start"
                     android:lineSpacingExtra="0sp"
+                    android:visibility="gone"
                     android:text="@string/this_field_is_mandatory"
                     android:textAppearance="@style/registr_error_msg"
                     android:textColor="@color/red"
                     android:textSize="@null"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
+               />
 
 
             </LinearLayout>
