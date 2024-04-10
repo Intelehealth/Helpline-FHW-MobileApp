@@ -1,0 +1,3 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ui2_ic_icons8_calendar_2" android:right="@dimen/list_container_padding" />
+</layer-list>

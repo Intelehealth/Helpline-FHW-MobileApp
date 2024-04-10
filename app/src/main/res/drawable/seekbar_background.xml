@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <size android:height="@dimen/seekbar_height" />
+            <corners android:radius="20dp" />
+            <gradient
+                android:angle="90"
+                android:centerColor="@color/grey_button_bg"
+                android:centerY="0.2"
+                android:endColor="@color/grey_button_bg"
+                android:startColor="@color/grey_button_bg"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <gradient
+        android:angle="90"
+        android:centerColor="@color/grey_button_bg"
+        android:endColor="@color/grey_button_bg"
+        android:startColor="@color/grey_button_bg" />
+
+    <corners android:radius="20dp" />
+
+    <stroke
+        android:width="3dp"
+        android:color="@color/grey_button_bg" />
+    <stroke
+        android:width="3dp"
+        android:color="@color/grey_button_bg" />
+
+</shape>-->
+<!--
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/grey_button_bg" /> &lt;!&ndash; Set your desired initial background color &ndash;&gt;
+            <corners android:radius="20dp" /> &lt;!&ndash; Adjust the radius to control the roundness &ndash;&gt;
+        </shape>
+    </item>
+</layer-list>-->

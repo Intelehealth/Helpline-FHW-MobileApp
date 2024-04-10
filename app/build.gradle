@@ -13,11 +13,11 @@ static def getDateTime() {
     return df.format(new Date());
 }
 android {
-    namespace 'org.intelehealth.app'
+    namespace 'org.intelehealth.helpline'
     compileSdk 34
 
     defaultConfig {
-        applicationId "org.intelehealth.app"
+        applicationId "org.intelehealth.helpline"
         minSdk 23
         targetSdk 34
         versionCode 65

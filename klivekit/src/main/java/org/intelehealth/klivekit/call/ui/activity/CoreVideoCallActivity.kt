@@ -2,7 +2,6 @@ package org.intelehealth.klivekit.call.ui.activity
 
 import android.Manifest
 import android.content.Intent
-import android.media.MediaPlayer
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
@@ -14,24 +13,20 @@ import androidx.lifecycle.lifecycleScope
 import com.github.ajalt.timberkt.Timber
 import com.google.gson.Gson
 import io.livekit.android.events.DisconnectReason
-import io.livekit.android.renderer.SurfaceViewRenderer
 import io.livekit.android.renderer.TextureViewRenderer
 import io.livekit.android.room.participant.ConnectionQuality
 import io.livekit.android.room.track.CameraPosition
-import io.livekit.android.room.track.Track
 import io.livekit.android.room.track.VideoTrack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.intelehealth.app.registry.PermissionRegistry
-import org.intelehealth.app.registry.allGranted
+import org.intelehealth.helpline.registry.PermissionRegistry
+import org.intelehealth.helpline.registry.allGranted
 import org.intelehealth.klivekit.R
-import org.intelehealth.klivekit.RtcEngine
 import org.intelehealth.klivekit.call.notification.HeadsUpNotificationService
 import org.intelehealth.klivekit.call.ui.viewmodel.CallViewModel
 import org.intelehealth.klivekit.call.ui.viewmodel.VideoCallViewModel
 import org.intelehealth.klivekit.call.utils.CallAction
 import org.intelehealth.klivekit.call.utils.CallHandlerUtils
-import org.intelehealth.klivekit.call.utils.CallNotificationHandler
 import org.intelehealth.klivekit.call.utils.CallStatus
 import org.intelehealth.klivekit.data.PreferenceHelper
 import org.intelehealth.klivekit.data.PreferenceHelper.Companion.RTC_DATA

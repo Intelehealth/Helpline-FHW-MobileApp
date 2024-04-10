@@ -1,4 +1,4 @@
-package org.intelehealth.app.registry
+package org.intelehealth.helpline.registry
 
 import android.content.Context
 import android.content.pm.PackageManager

@@ -1,4 +1,4 @@
-package org.intelehealth.app;
+package org.intelehealth.helpline;
 
 import org.junit.Test;
 
