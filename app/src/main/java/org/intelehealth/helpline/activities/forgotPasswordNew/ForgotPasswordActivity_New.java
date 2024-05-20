@@ -39,6 +39,7 @@ import org.intelehealth.helpline.models.ForgotPasswordApiResponseModel_New;
 import org.intelehealth.helpline.models.RequestOTPParamsModel_New;
 import org.intelehealth.helpline.networkApiCalls.ApiClient;
 import org.intelehealth.helpline.networkApiCalls.ApiInterface;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.Logger;
 import org.intelehealth.helpline.utilities.SessionManager;
 import org.intelehealth.helpline.utilities.SnackbarUtils;
@@ -173,6 +174,8 @@ public class ForgotPasswordActivity_New extends AppCompatActivity {
         etUsername.addTextChangedListener(new MyWatcher(etUsername));
         etMobileNo.addTextChangedListener(new MyWatcher(etMobileNo));
         setMobileNumberLimit();
+        AlphabetsInputFilter alphabetsInputFilter = new AlphabetsInputFilter();
+        etUsername.setFilters(new InputFilter[]{alphabetsInputFilter});
     }
     private int mSelectedMobileNumberValidationLength = 0;
     private String mSelectedCountryCode = "";

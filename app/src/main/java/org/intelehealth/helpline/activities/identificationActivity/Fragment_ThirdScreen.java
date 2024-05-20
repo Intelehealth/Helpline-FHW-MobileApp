@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.os.LocaleList;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -160,8 +161,12 @@ public class Fragment_ThirdScreen extends Fragment {
 
         mRelationNameEditText = view.findViewById(R.id.relation_edittext);
         mNationalIDEditText = view.findViewById(R.id.national_ID_editText);
-        mNationalIDEditText.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(24)}); //all capital input
-
+        //mNationalIDEditText.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(24)}); //all capital input
+        mNationalIDEditText.setFilters(new InputFilter[]{
+                new InputFilter.AllCaps(),
+                new InputFilter.LengthFilter(24),
+                emojiFilter
+        });
         mOccupationEditText = view.findViewById(R.id.occupation_editText);
         mCasteSpinner = view.findViewById(R.id.caste_spinner);
         mEducationSpinner = view.findViewById(R.id.education_spinner);
@@ -1027,6 +1032,21 @@ public class Fragment_ThirdScreen extends Fragment {
         }
         idCursor1.close();
     }
-
-
+    InputFilter emojiFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            StringBuilder filteredStringBuilder = new StringBuilder();
+            for (int index = start; index < end; index++) {
+                char currentChar = source.charAt(index);
+                int type = Character.getType(currentChar);
+                if (type != Character.SURROGATE && type != Character.OTHER_SYMBOL) {
+                    // Allow non-emoji characters
+                    filteredStringBuilder.append(currentChar);
+                }
+            }
+            // Return null if the string contains no emojis, otherwise return an empty string
+            return filteredStringBuilder.length() == end - start ? null : filteredStringBuilder.toString();
+        }
+    };
 }

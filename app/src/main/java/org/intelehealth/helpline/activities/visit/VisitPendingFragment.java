@@ -14,11 +14,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.text.Html;
+import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +44,7 @@ import org.intelehealth.helpline.activities.onboarding.PrivacyPolicyActivity_New
 import org.intelehealth.helpline.app.IntelehealthApplication;
 import org.intelehealth.helpline.database.dao.EncounterDAO;
 import org.intelehealth.helpline.models.PrescriptionModel;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.SessionManager;
 import org.intelehealth.helpline.utilities.VisitCountInterface;
 import org.intelehealth.helpline.utilities.exception.DAOException;
@@ -148,6 +151,9 @@ public class VisitPendingFragment extends Fragment {
 
         visit_pending_card_header = view.findViewById(R.id.visit_pending_card_header);
         searchview_pending = view.findViewById(R.id.searchview_pending);
+        EditText searchEditText = (EditText) searchview_pending.findViewById(androidx.appcompat.R.id.search_src_text);
+        searchEditText.setFilters(new InputFilter[]{new AlphabetsInputFilter(Integer.MAX_VALUE, false)});
+
         closeButton = searchview_pending.findViewById(androidx.appcompat.R.id.search_close_btn);
 
         recent_nodata = view.findViewById(R.id.recent_nodata);

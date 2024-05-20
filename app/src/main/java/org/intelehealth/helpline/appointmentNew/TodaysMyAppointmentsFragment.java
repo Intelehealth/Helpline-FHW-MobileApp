@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,6 +41,7 @@ import org.intelehealth.helpline.appointment.model.AppointmentInfo;
 import org.intelehealth.helpline.appointment.model.AppointmentListingResponse;
 import org.intelehealth.helpline.database.dao.EncounterDAO;
 import org.intelehealth.helpline.models.dto.VisitDTO;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.DateAndTimeUtils;
 import org.intelehealth.helpline.utilities.NavigationUtils;
 import org.intelehealth.helpline.utilities.SessionManager;
@@ -194,6 +196,8 @@ public class TodaysMyAppointmentsFragment extends Fragment {
         noDataFoundForCancelled = view.findViewById(R.id.layout_no_data_found_cancelled);
 
         autotvSearch = view.findViewById(R.id.et_search_today);
+        AlphabetsInputFilter alphabetsInputFilter = new AlphabetsInputFilter();
+        autotvSearch.setFilters(new InputFilter[]{alphabetsInputFilter});
         ivClearText = view.findViewById(R.id.iv_clear_today);
         ivClearText.setOnClickListener(v -> {
             autotvSearch.setText("");

@@ -89,6 +89,8 @@ import org.intelehealth.helpline.networkApiCalls.ApiClient;
 import org.intelehealth.helpline.networkApiCalls.ApiInterface;
 import org.intelehealth.helpline.shared.BaseActivity;
 import org.intelehealth.helpline.ui2.calendarviewcustom.SendSelectedDateInterface;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
+import org.intelehealth.helpline.ui2.validations.UpperCaseAlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.BitmapUtils;
 import org.intelehealth.helpline.utilities.DateAndTimeUtils;
 import org.intelehealth.helpline.utilities.DialogUtils;
@@ -221,6 +223,17 @@ public class MyProfileActivity extends BaseActivity implements SendSelectedDateI
 
         manageListeners();
         setMobileNumberLimit();
+        setInputFilter();
+    }
+
+    private void setInputFilter() {
+        AlphabetsInputFilter alphabetsInputFilter = new AlphabetsInputFilter();
+        etUsername.setFilters(new InputFilter[]{alphabetsInputFilter});
+        etEmail.setFilters(new InputFilter[]{alphabetsInputFilter});
+        UpperCaseAlphabetsInputFilter inputFilter = new UpperCaseAlphabetsInputFilter(25);
+        etFirstName.setFilters(new InputFilter[]{inputFilter});
+        etMiddleName.setFilters(new InputFilter[]{inputFilter});
+        etLastName.setFilters(new InputFilter[]{inputFilter});
     }
 
     private void manageListeners() {
