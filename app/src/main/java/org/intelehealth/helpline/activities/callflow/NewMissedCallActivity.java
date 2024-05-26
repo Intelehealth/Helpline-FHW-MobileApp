@@ -22,7 +22,7 @@ import org.intelehealth.helpline.BuildConfig;
 import org.intelehealth.helpline.R;
 import org.intelehealth.helpline.activities.callflow.adapter.MissedCallsAdapter;
 import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseDataModel;
-import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseModel;
+import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseModelOld;
 import org.intelehealth.helpline.activities.homeActivity.HomeScreenActivity_New;
 import org.intelehealth.helpline.app.AppConstants;
 import org.intelehealth.helpline.databinding.ActivityMissedCallsBinding;
@@ -133,13 +133,13 @@ public class NewMissedCallActivity extends AppCompatActivity implements NetworkU
             showProgressbarForInitialLoading(false);
             ApiInterface apiService = ApiClient.createService(ApiInterface.class);
             try {
-                Observable<MissedCallsResponseModel> resultsObservable = apiService.getMissedCalls(finalURL, AppConstants.AUTH_HEADER_CALL_FLOW);
+                Observable<MissedCallsResponseModelOld> resultsObservable = apiService.getMissedCalls(finalURL, AppConstants.AUTH_HEADER_CALL_FLOW);
                 resultsObservable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new DisposableObserver<>() {
                             @Override
-                            public void onNext(MissedCallsResponseModel res) {
+                            public void onNext(MissedCallsResponseModelOld res) {
                                 //customProgressDialog.dismiss();
                                 showProgressbarForInitialLoading(true);
                                 isFirstTimeLoading = false;

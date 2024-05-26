@@ -168,4 +168,8 @@ public class MissedCallsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         });
     }
+    public void updateItems(List<MissedCallsResponseDataModel> newItems) {
+        this.mMissedCallsResponseDataModels.addAll(newItems);
+        //notifyItemRangeChanged(0, mMissedCallsResponseDataModels.size());
+    }
 }

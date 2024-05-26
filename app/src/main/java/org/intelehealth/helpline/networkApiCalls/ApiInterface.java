@@ -1,9 +1,13 @@
 package org.intelehealth.helpline.networkApiCalls;
 
 
+import org.intelehealth.helpline.activities.callflow.models.ApiResponse;
 import org.intelehealth.helpline.activities.callflow.models.CallFlowResponse;
 import org.intelehealth.helpline.activities.callflow.models.CallFlowResponseModelClass;
+import org.intelehealth.helpline.activities.callflow.models.CallRequestModel;
+import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseDataModel;
 import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseModel;
+import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseModelOld;
 import org.intelehealth.helpline.models.ChangePasswordModel_New;
 import org.intelehealth.helpline.models.ChangePasswordParamsModel_New;
 import org.intelehealth.helpline.models.CheckAppUpdateRes;
@@ -215,8 +219,8 @@ public interface ApiInterface {
                                                              @Header("Authorization") String authHeader);
 
     @GET
-    Observable<MissedCallsResponseModel> getMissedCalls(@Url String url,
-                                                        @Header("Authorization") String authHeader);
+    Observable<MissedCallsResponseModelOld> getMissedCalls(@Url String url,
+                                                           @Header("Authorization") String authHeader);
 
     /*   @POST
        Observable<JSONObject> sendSMS(@Url String url,
@@ -231,6 +235,12 @@ public interface ApiInterface {
                                    @Query("from") String from,
                                    @Query("msg") String msg,
                                    @Query("ctid") String ctid);
+    @GET
+    Call<MissedCallsResponseModel> getMissedCalls1(@Url String url,
+                                                                @Header("Authorization") String authHeader);
 
+   /* @GET
+    <T> Call<ApiResponse<T>> getMissedCalls1(@Url String url,
+                                             @Header("Authorization") String authHeader);*/
 
 }
