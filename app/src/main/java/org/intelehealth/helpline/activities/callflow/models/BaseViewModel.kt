@@ -15,8 +15,6 @@ import org.intelehealth.helpline.activities.callflow.utils.NetworkHelper
 import org.intelehealth.klivekit.data.PreferenceHelper
 
 open class BaseViewModel(  private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-private val networkHelper: NetworkHelper? = null,
-private val preferenceHelper: PreferenceHelper? = null
 ) : ViewModel() {
     private val loadingData = MutableLiveData<Boolean>()
 
@@ -50,54 +48,6 @@ private val preferenceHelper: PreferenceHelper? = null
             errorResult.postValue(throwable)
             loadingData.postValue(false)
         }
-    }
-
-
-    fun <L> executeLocalQuery(
-            queryCall: () -> L?
-    ) = flow {
-        val localData = queryCall.invoke()
-        localData?.let { emit(Result.Success(localData, "")) } ?: kotlin.run {
-            emit(Result.Error<L>("No record found"))
-        }
-    }.onStart {
-        emit(Result.Loading<L>("Please wait..."))
-    }.flowOn(dispatcher)
-
-    /**
-     * Handle response here in base with loading and error message
-     *
-     */
-    fun <T> handleResponse(it: Result<T>, callback: (data: List<T>) -> Unit) {
-        println("handleResponse status ${it.status} ${it.message}")
-        when (it.status) {
-            Result.Status.LOADING -> {
-                loadingData.postValue(true)
-            }
-
-            Result.Status.FAIL -> {
-                loadingData.postValue(false)
-                failResult.postValue("")
-            }
-
-            Result.Status.SUCCESS -> {
-                loadingData.postValue(false)
-                it.data?.let { data ->
-                    println("data ${Gson().toJson(data)}")
-                    callback(listOf(data))
-                } ?: failResult.postValue(it.message ?: "")
-            }
-
-            Result.Status.ERROR -> {
-                println("ERROR ${it.message}")
-                loadingData.postValue(false)
-                errorResult.postValue(Throwable(it.message))
-            }
-        }
-    }
-
-    fun updateFailResult(message: String) {
-        failResult.postValue(message)
     }
 
     companion object {

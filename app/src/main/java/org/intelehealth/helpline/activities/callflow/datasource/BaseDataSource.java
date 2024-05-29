@@ -21,7 +21,7 @@ import retrofit2.Response;
 
 public class BaseDataSource{
     protected final ApiInterface apiInterface;
-        private static final String TAG = "ForgotPasswordServiceDa";
+        private static final String TAG = "BaseDataSource";
 
         public BaseDataSource(ApiInterface apiInterface) {
             this.apiInterface = apiInterface;
@@ -32,12 +32,6 @@ public class BaseDataSource{
             call.enqueue(new Callback<S>() {
                 @Override
                 public void onResponse(@NonNull Call<S> call, @NonNull Response<S> response) {
-                  /*  executeListener.onLoading(false);
-                    if (response.isSuccessful()) {
-                        if (response.body() != null) {
-                            successListener.onSuccess(response.body());
-                        } else executeListener.onFail("No data found");
-                    }*/
                     executeListener.onLoading(false);
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
@@ -66,38 +60,11 @@ public class BaseDataSource{
         }
 
         public <T> void executeCall(APIExecuteListener<T> executeListener, Call<MissedCallsResponseModel> call) {
-            Log.d(TAG, "executeCall: ");
             enqueueCall(executeListener, call, result -> {
-                Log.d(TAG, "executeCall: result : "+result);
-                Log.d(TAG, "executeCall: result : "+new Gson().toJson(result));
-
-                if (result != null && result.getStatus()!=null && result.getStatus().equalsIgnoreCase("ok"))
+                if (result != null && result.getStatus() != null && result.getStatus().equalsIgnoreCase("ok"))
                     executeListener.onSuccess(result);
-               // else executeListener.onFail(result());
+                // else executeListener.onFail(result());
             });
-//        executeListener.onLoading(true);
-//        call.enqueue(new Callback<ApiResponse<T>>() {
-//            @Override
-//            public void onResponse(Call<ApiResponse<T>> call, Response<ApiResponse<T>> response) {
-//                executeListener.onLoading(false);
-//                if (response.isSuccessful()) {
-//                    if (response.body() != null && response.body().isSuccess()) {
-//                        executeListener.onSuccess(response.body().getData());
-//                    } else executeListener.onFail(response.body().getMessage());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ApiResponse<T>> call, Throwable t) {
-//                executeListener.onLoading(false);
-//                executeListener.onError(t);
-//            }
-//        });
         }
-
-      /*  public <T> void executeDirectCall(APIExecuteListener<T> executeListener, Call<T> call) {
-            Log.e(TAG, "executeDirectCall: ");
-            enqueueCall(executeListener, call, result -> executeListener.onSuccess(result));
-        }*/
 
 }

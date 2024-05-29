@@ -44,7 +44,7 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
 
 
         initListView()
-        getMissedCalls()
+        getRecordings()
         observeData()
     }
 
@@ -55,7 +55,7 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
 
     private fun getEmptyDataIcon(): Int = R.drawable.no_data_icon
 
-    private fun getMissedCalls() {
+    private fun getRecordings() {
         val finalURL = BuildConfig.SERVER_URL + "/recordings/" + SessionManager(context).loginHWMobileNumber + "/" + pageNo
         if (NetworkConnection.isOnline(context)) {
             viewModel = ViewModelProvider(this, ViewModelProvider.Factory.from(CallTypeViewModel.initializer)).get(CallTypeViewModel::class.java)
@@ -145,14 +145,13 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
     }
 
     private fun loadMoreItems() {
-        isLoading = true // Set loading to true before making API call
-        adapter.addLoading() // Add loading item to show progress bar
-        getMissedCalls();
+        isLoading = true
+        adapter.addLoading()
+        getRecordings();
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "kaverionPause: ")
         adapter.resetMediaPlayer()
     }
 
