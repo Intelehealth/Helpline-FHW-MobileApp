@@ -27,7 +27,6 @@ class MissedCallTypesActivity : BaseActivity(), NetworkUtils.InternetCheckUpdate
         super.onCreate(savedInstanceState)
         binding = ActivityMissedCallsDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // setupActionBar()
         networkUtils = NetworkUtils(this@MissedCallTypesActivity, this)
 
         initUI()
@@ -37,7 +36,7 @@ class MissedCallTypesActivity : BaseActivity(), NetworkUtils.InternetCheckUpdate
     private fun initUI() {
         val toolbar = findViewById<RelativeLayout>(R.id.toolbar_missed_call)
         val tvTitle = toolbar.findViewById<TextView>(R.id.tv_screen_title_common)
-         ivIsInternet = toolbar.findViewById(R.id.imageview_is_internet_common)
+        ivIsInternet = toolbar.findViewById(R.id.imageview_is_internet_common)
         val ivBackArrow = toolbar.findViewById<ImageView>(R.id.iv_back_arrow_common)
 
         tvTitle.text = getString(R.string.missed_calls)
@@ -53,18 +52,6 @@ class MissedCallTypesActivity : BaseActivity(), NetworkUtils.InternetCheckUpdate
         }
     }
 
-
-    /*private fun setupActionBar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.let {
-            it.title = resources.getString(R.string.title_visit_status)
-            it.setHomeButtonEnabled(true)
-            it.setDisplayHomeAsUpEnabled(true)
-        }
-        binding.toolbar.setNavigationOnClickListener { _ -> finish() }
-
-    }*/
-
     private fun setupTabs() {
         if (::binding.isInitialized) {
             val adapter = CallTypeTabsPagerAdapter(this, supportFragmentManager, lifecycle)
@@ -75,12 +62,12 @@ class MissedCallTypesActivity : BaseActivity(), NetworkUtils.InternetCheckUpdate
             ) { tab: TabLayout.Tab, position: Int ->
                 tab.text = adapter.getTitle(position)
             }.attach()
+            binding.viewPagerCallTypes.isUserInputEnabled = false
         }
     }
+
     override fun onStart() {
         super.onStart()
-
-        // Register receiver for internet check
         networkUtils.callBroadcastReceiver()
     }
 
@@ -91,10 +78,10 @@ class MissedCallTypesActivity : BaseActivity(), NetworkUtils.InternetCheckUpdate
             ivIsInternet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ui2_ic_no_internet))
         }
     }
+
     override fun onStop() {
         super.onStop()
         try {
-            // Unregister receiver for internet check
             networkUtils.unregisterNetworkReceiver()
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()

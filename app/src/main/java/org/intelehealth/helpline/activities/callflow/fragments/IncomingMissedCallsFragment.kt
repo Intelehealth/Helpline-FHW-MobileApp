@@ -43,8 +43,6 @@ class IncomingMissedCallsFragment : Fragment(R.layout.fragment_layout) {
         binding.emptyDataIcon = getEmptyDataIcon()
         isFirstTimeLoading = true
 
-        //showProgressbarForInitialLoading(false, "onViewCreated")
-
         initListView()
         getMissedCalls()
         observeData()
@@ -59,7 +57,6 @@ class IncomingMissedCallsFragment : Fragment(R.layout.fragment_layout) {
 
     private fun getMissedCalls() {
         val finalURL = BuildConfig.SERVER_URL + "/noanswer/" + pageNo
-        Log.d(TAG, "getMissedCalls: finalURL : " + finalURL)
         if (NetworkConnection.isOnline(context)) {
             viewModel = ViewModelProvider(this, ViewModelProvider.Factory.from(CallTypeViewModel.initializer)).get(CallTypeViewModel::class.java)
             val callRequestModel = CallRequestModel(finalURL, AppConstants.AUTH_HEADER_CALL_FLOW)
@@ -80,37 +77,25 @@ class IncomingMissedCallsFragment : Fragment(R.layout.fragment_layout) {
             missedCallResult?.let {
                 isFirstTimeLoading = false
                 isFirstTimeLoading = false
-                ///showProgressbarForInitialLoading(false, "missedCallResult")
                 bindData(it)
             }
         })
 
-        // observe loading - progress dialog
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) adapter.addLoading() else adapter.removeLoading()
 
         }
-        // failure - success - false
         viewModel.failDataResult.observe(viewLifecycleOwner) { failureResultData ->
             isLoading = false;
             isFirstTimeLoading = false
-            /*  Handler(Looper.getMainLooper()).postDelayed({
-                  Toast.makeText(context, resources.getString(R.string.failed_to_connect), Toast.LENGTH_SHORT).show()
-                  showProgressbarForInitialLoading(true, "failDataResult")
-              }, 500)*/
-
         }
 
-        // api failure
         viewModel.errorDataResult.observe(viewLifecycleOwner)
-        { errorResult ->
-            Log.d(TAG, "observeData: errorDataResult")
+        {
             isLoading = false;
             isFirstTimeLoading = false
             Toast.makeText(context, resources.getString(R.string.failed_to_connect), Toast.LENGTH_SHORT).show()
-            /// showProgressbarForInitialLoading(true, "errorDataResult")
         }
-
     }
 
     private fun initListView() {
@@ -147,7 +132,7 @@ class IncomingMissedCallsFragment : Fragment(R.layout.fragment_layout) {
         if (result.incomingCalls.isNotEmpty()) {
             isLoading = false
             adapter.updateItems(result.incomingCalls)
-            pageNo++ // Increment page number for next call
+            pageNo++
             adapter.notifyDataSetChanged()
         } else {
             isLastPage = true
@@ -160,24 +145,9 @@ class IncomingMissedCallsFragment : Fragment(R.layout.fragment_layout) {
     }
 
     private fun loadMoreItems() {
-        isLoading = true // Set loading to true before making API call
-        adapter.addLoading() // Add loading item to show progress bar
+        isLoading = true
+        adapter.addLoading()
         getMissedCalls();
     }
-
-    /*private fun showProgressbarForInitialLoading(wantToDismiss: Boolean, fromWhere: String) {
-        if (isFirstTimeLoading) {
-            binding.layoutLoader.root.visibility = View.VISIBLE
-        } else {
-            binding.layoutLoader.root.visibility = View.GONE
-        }
-        if (wantToDismiss) {
-            val visibility = binding.layoutLoader.root.visibility
-            val isProgressBarVisible = visibility == View.VISIBLE
-            if (isProgressBarVisible) {
-                binding.layoutLoader.root.visibility = View.GONE
-            }
-        }
-    }*/
 
 }

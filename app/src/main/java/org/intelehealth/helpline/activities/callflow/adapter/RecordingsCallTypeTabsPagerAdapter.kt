@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.intelehealth.helpline.R
 import org.intelehealth.helpline.activities.callflow.fragments.IncomingCallRecordingsFragment
 import org.intelehealth.helpline.activities.callflow.fragments.IncomingMissedCallsFragment
+import org.intelehealth.helpline.activities.callflow.fragments.OutgoingCallRecordingsFragment
 import org.intelehealth.helpline.activities.callflow.fragments.OutgoingMissedCallsFragment
 
 class RecordingsCallTypeTabsPagerAdapter (
@@ -19,7 +20,7 @@ class RecordingsCallTypeTabsPagerAdapter (
     private val tabs = context.resources.getStringArray(R.array.call_types)
     private val fragments = arrayListOf<Fragment>(
             IncomingCallRecordingsFragment.newInstance(),
-            OutgoingMissedCallsFragment.newInstance(),
+            OutgoingCallRecordingsFragment.newInstance(),
     )
 
     override fun createFragment(position: Int): Fragment {

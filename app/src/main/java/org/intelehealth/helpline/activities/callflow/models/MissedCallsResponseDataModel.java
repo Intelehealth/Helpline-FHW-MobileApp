@@ -3,8 +3,32 @@ package org.intelehealth.helpline.activities.callflow.models;
 import com.google.gson.annotations.SerializedName;
 
 public class MissedCallsResponseDataModel {
-    @SerializedName("CallTime")
+    @SerializedName("CallStartTime")
     private String CallTime;
+
+    public String getReceiver() {
+        return Receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        Receiver = receiver;
+    }
+
+    public String getReceiverName() {
+        return ReceiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        ReceiverName = receiverName;
+    }
+
+    public String getRecordingURL() {
+        return RecordingURL;
+    }
+
+    public void setRecordingURL(String recordingURL) {
+        RecordingURL = recordingURL;
+    }
 
     public String getCallTime() {
         return CallTime;
@@ -45,5 +69,12 @@ public class MissedCallsResponseDataModel {
     private String PatientNumber;
     @SerializedName("record_id")
     private String record_id;
+    @SerializedName("Receiver")
+    private String Receiver;
+
+    @SerializedName("ReceiverName")
+    private String ReceiverName;
+    @SerializedName("RecordingURL")
+    private String RecordingURL;
 
 }

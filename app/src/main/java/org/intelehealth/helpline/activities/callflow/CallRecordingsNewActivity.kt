@@ -77,6 +77,7 @@ class CallRecordingsNewActivity : BaseActivity(), NetworkUtils.InternetCheckUpda
             ) { tab: TabLayout.Tab, position: Int ->
                 tab.text = adapter.getTitle(position)
             }.attach()
+            binding.viewPagerCallTypes.isUserInputEnabled = false
         }
     }
 
@@ -86,5 +87,20 @@ class CallRecordingsNewActivity : BaseActivity(), NetworkUtils.InternetCheckUpda
         } else {
             ivIsInternet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ui2_ic_no_internet))
         }
+    }
+    override fun onStop() {
+        super.onStop()
+        try {
+            // Unregister receiver for internet check
+            networkUtils.unregisterNetworkReceiver()
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+
+        // Register receiver for internet check
+        networkUtils.callBroadcastReceiver()
     }
 }

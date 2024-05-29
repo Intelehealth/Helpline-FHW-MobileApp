@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import org.intelehealth.helpline.BuildConfig
 import org.intelehealth.helpline.R
-import org.intelehealth.helpline.activities.callflow.adapter.MissedCallsAdapter
+import org.intelehealth.helpline.activities.callflow.adapter.CallRecordingsAdapter
 import org.intelehealth.helpline.activities.callflow.models.CallRequestModel
 import org.intelehealth.helpline.activities.callflow.models.CallTypeViewModel
 import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseDataModel
@@ -21,12 +21,13 @@ import org.intelehealth.helpline.activities.callflow.utils.setupLinearView
 import org.intelehealth.helpline.app.AppConstants
 import org.intelehealth.helpline.databinding.FragmentLayoutBinding
 import org.intelehealth.helpline.utilities.NetworkConnection
+import org.intelehealth.helpline.utilities.SessionManager
 import java.util.LinkedList
 
 class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
     private val TAG = "IncomingCallRecordingsF"
     protected lateinit var binding: FragmentLayoutBinding
-    protected lateinit var adapter: MissedCallsAdapter
+    protected lateinit var adapter: CallRecordingsAdapter
     private var isLastPage = false
     private var isLoading = false
     private var pageNo = 0
@@ -41,23 +42,20 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
         binding.emptyDataIcon = getEmptyDataIcon()
         isFirstTimeLoading = true
 
-        //showProgressbarForInitialLoading(false, "onViewCreated")
-
         initListView()
         getMissedCalls()
         observeData()
     }
 
-    fun getEmptyDataMessage(): String = getString(
+    private fun getEmptyDataMessage(): String = getString(
             R.string.no_data_message,
             getString(R.string.incoming)
     )
 
-    fun getEmptyDataIcon(): Int = R.drawable.no_data_icon
+    private fun getEmptyDataIcon(): Int = R.drawable.no_data_icon
 
     private fun getMissedCalls() {
-        val finalURL = BuildConfig.SERVER_URL + "/noanswer/" + pageNo
-        Log.d(TAG, "getMissedCalls: finalURL : " + finalURL)
+        val finalURL = BuildConfig.SERVER_URL + "/recordings/" + SessionManager(context).loginHWMobileNumber + "/" + pageNo
         if (NetworkConnection.isOnline(context)) {
             viewModel = ViewModelProvider(this, ViewModelProvider.Factory.from(CallTypeViewModel.initializer)).get(CallTypeViewModel::class.java)
             val callRequestModel = CallRequestModel(finalURL, AppConstants.AUTH_HEADER_CALL_FLOW)
@@ -78,42 +76,31 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
             missedCallResult?.let {
                 isFirstTimeLoading = false
                 isFirstTimeLoading = false
-                ///showProgressbarForInitialLoading(false, "missedCallResult")
                 bindData(it)
             }
         })
 
-        // observe loading - progress dialog
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) adapter.addLoading() else adapter.removeLoading()
 
         }
-        // failure - success - false
-        viewModel.failDataResult.observe(viewLifecycleOwner) { failureResultData ->
+        viewModel.failDataResult.observe(viewLifecycleOwner) {
             isLoading = false;
             isFirstTimeLoading = false
-            /*Handler(Looper.getMainLooper()).postDelayed({
-                Toast.makeText(context, resources.getString(R.string.failed_to_connect), Toast.LENGTH_SHORT).show()
-                showProgressbarForInitialLoading(true, "failDataResult")
-            }, 500)*/
-
         }
 
-        // api failure
         viewModel.errorDataResult.observe(viewLifecycleOwner)
-        { errorResult ->
-            Log.d(TAG, "observeData: errorDataResult")
+        {
             isLoading = false;
             isFirstTimeLoading = false
             Toast.makeText(context, resources.getString(R.string.failed_to_connect), Toast.LENGTH_SHORT).show()
-            /// showProgressbarForInitialLoading(true, "errorDataResult")
         }
 
     }
 
     private fun initListView() {
         dataList = ArrayList()
-        adapter = MissedCallsAdapter(requireContext(), LinkedList())
+        adapter = CallRecordingsAdapter(requireContext(), LinkedList())
         val layoutManager = binding.rvPrescription.setupLinearView(adapter)
 
         binding.rvPrescription.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -141,7 +128,6 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
 
 
     private fun bindData(result: MissedCallsResponseModel) {
-        //success
         if (result.incomingCalls.isNotEmpty()) {
             isLoading = false
             adapter.updateItems(result.incomingCalls)
@@ -163,19 +149,10 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
         getMissedCalls();
     }
 
-    /*private fun showProgressbarForInitialLoading(wantToDismiss: Boolean, fromWhere: String) {
-        if (isFirstTimeLoading) {
-            binding.layoutLoader.root.visibility = View.VISIBLE
-        } else {
-            binding.layoutLoader.root.visibility = View.GONE
-        }
-        if (wantToDismiss) {
-            val visibility = binding.layoutLoader.root.visibility
-            val isProgressBarVisible = visibility == View.VISIBLE
-            if (isProgressBarVisible) {
-                binding.layoutLoader.root.visibility = View.GONE
-            }
-        }
-    }*/
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "kaverionPause: ")
+        adapter.resetMediaPlayer()
+    }
 
 }

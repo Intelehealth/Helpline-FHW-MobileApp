@@ -31,7 +31,7 @@ import java.util.List;
 public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "RecordedCallsAdapter";
     private Context mContext;
-    private List<CallFlowResponseData> mAudioList;
+    private List<MissedCallsResponseDataModel> mAudioList;
     private MediaPlayer mMediaPlayer;
     private boolean isPlaying = false;
     private int mCurrentlyPlayingPosition = -1;
@@ -44,7 +44,7 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int VIEW_TYPE_LOADING = 0;
     private static final int VIEW_TYPE_NORMAL = 1;
 
-    public CallRecordingsAdapter(Context context, List<CallFlowResponseData> audioList) {
+    public CallRecordingsAdapter(Context context, List<MissedCallsResponseDataModel> audioList) {
         this.mContext = context;
         this.mAudioList = audioList;
     }
@@ -95,9 +95,9 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private void bindData(RecyclerView.ViewHolder holder, int position) {
         AudioViewHolder viewHolder = ((CallRecordingsAdapter.AudioViewHolder) holder);
-        CallFlowResponseData callFlowResponseData = mAudioList.get(position);
+        MissedCallsResponseDataModel callFlowResponseData = mAudioList.get(position);
         viewHolder.tvName.setText(callFlowResponseData.getPatientNumber());
-        viewHolder.tvDateTime.setText(DateTimeUtils.convertDateToDisplayFormatInCall(callFlowResponseData.getCallStartTime()));
+        viewHolder.tvDateTime.setText(DateTimeUtils.convertDateToDisplayFormatInCall(callFlowResponseData.getCallTime()));
         viewHolder.tvTypeOfCall.setText(callFlowResponseData.getCallType());
 
         viewHolder.progressBarAudio.setVisibility(View.GONE);
@@ -180,6 +180,30 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    public void resetMediaPlayer() {
+      /*  if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.reset();
+            isPlaying =false;
+
+        }
+        mPausedPosition = 0;*/
+        if(mPlayingHolder!=null){
+            stopAudio(mPlayingHolder);
+            updateSeekBar(mPlayingHolder);
+            mPlayingHolder.seekBar.setVisibility(View.GONE);
+        }
+    }
+
+    public void resetSeekbar() {
+        pauseAudio();
+        changePlayPauseAudioButtons(true, mPlayingHolder);
+        /*if (mPlayingHolder.seekBar != null) {
+            mPlayingHolder.seekBar.setProgress(0);
+            mPlayingHolder.seekBar.setVisibility(View.GONE);            mPlayingHolder.buttonPlay.setImageDrawable();
+        }*/
+    }
+
     private void changePlayPauseAudioButtons(boolean isPlay, AudioViewHolder holder) {
         if (isPlay) {
             holder.buttonPlay.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ui2_ic_play_audio));
@@ -191,7 +215,7 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
-    private void handleClickListener(int position, AudioViewHolder holder, CallFlowResponseData callFlowResponseData) {
+    private void handleClickListener(int position, AudioViewHolder holder, MissedCallsResponseDataModel callFlowResponseData) {
         if (position == mCurrentlyPlayingPosition) {
             Log.d(TAG, "handleClickListener: step 1");
             if (isPlaying) {
@@ -282,15 +306,18 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void stopAudio(AudioViewHolder holder) {
-        holder.buttonPlay.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ui2_ic_play_audio));
+        if(holder!=null){
+            holder.buttonPlay.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ui2_ic_play_audio));
 
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-            isPlaying = false;
-            mCurrentlyPlayingPosition = -1;
-            mPausedPosition = 0;
+            if (mMediaPlayer != null) {
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+                isPlaying = false;
+                mCurrentlyPlayingPosition = -1;
+                mPausedPosition = 0;
+            }
         }
+
     }
 
     /* private void updateSeekBar(AudioViewHolder holder) {
@@ -370,8 +397,9 @@ public class CallRecordingsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         }
     }
-   /* public void updateItems(List<MissedCallsResponseDataModel> newItems) {
+
+    public void updateItems(List<MissedCallsResponseDataModel> newItems) {
         this.mAudioList.addAll(newItems);
         //notifyItemRangeChanged(0, mMissedCallsResponseDataModels.size());
-    }*/
+    }
 }
