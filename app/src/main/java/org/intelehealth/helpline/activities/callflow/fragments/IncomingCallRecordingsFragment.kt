@@ -42,6 +42,7 @@ class IncomingCallRecordingsFragment : Fragment(R.layout.fragment_layout) {
         binding.emptyDataIcon = getEmptyDataIcon()
         isFirstTimeLoading = true
 
+
         initListView()
         getMissedCalls()
         observeData()
