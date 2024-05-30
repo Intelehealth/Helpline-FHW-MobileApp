@@ -9,6 +9,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 
 import org.intelehealth.helpline.BuildConfig;
+import org.intelehealth.helpline.database.InteleHealthDatabaseHelper;
 import org.intelehealth.helpline.networkApiCalls.ApiClient;
 import org.intelehealth.helpline.networkApiCalls.ApiInterface;
 import org.intelehealth.helpline.syncModule.LastSyncWork;
@@ -212,6 +213,7 @@ public class AppConstants {
     public static final String FROM = "TIFDOC";
     public static final String CTID = "1107171170759843438";
 
+    public static InteleHealthDatabaseHelper inteleHealthDatabaseHelper = new InteleHealthDatabaseHelper(IntelehealthApplication.getAppContext());
 
 
 }

@@ -14,11 +14,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.text.Html;
+import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +44,8 @@ import org.intelehealth.helpline.activities.onboarding.PrivacyPolicyActivity_New
 import org.intelehealth.helpline.app.IntelehealthApplication;
 import org.intelehealth.helpline.database.dao.EncounterDAO;
 import org.intelehealth.helpline.models.PrescriptionModel;
+import org.intelehealth.helpline.shared.FirstLetterUpperCaseInputFilter;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.SessionManager;
 import org.intelehealth.helpline.utilities.VisitCountInterface;
 import org.intelehealth.helpline.utilities.exception.DAOException;
@@ -142,6 +146,8 @@ public class VisitReceivedFragment extends Fragment {
         main_block = view.findViewById(R.id.main_block);
         visit_received_card_header = view.findViewById(R.id.visit_received_card_header);
         searchview_received = view.findViewById(R.id.searchview_received);
+        EditText searchEditText = (EditText) searchview_received.findViewById(androidx.appcompat.R.id.search_src_text);
+        searchEditText.setFilters(new InputFilter[]{new AlphabetsInputFilter(Integer.MAX_VALUE, false)});
         closeButton = searchview_received.findViewById(androidx.appcompat.R.id.search_close_btn);
         recent_nodata = view.findViewById(R.id.recent_nodata);
         older_nodata = view.findViewById(R.id.older_nodata);
@@ -614,7 +620,7 @@ public class VisitReceivedFragment extends Fragment {
                 } catch (DAOException e) {
                     e.printStackTrace();
                 }
-                if(!isPrescriptionReceived) continue;
+                if (!isPrescriptionReceived) continue;
                 String emergencyUuid = "";
                 EncounterDAO encounterDAO = new EncounterDAO();
                 try {
@@ -685,7 +691,7 @@ public class VisitReceivedFragment extends Fragment {
                 } catch (DAOException e) {
                     e.printStackTrace();
                 }
-                if(!isPrescriptionReceived) continue;
+                if (!isPrescriptionReceived) continue;
                 String emergencyUuid = "";
                 EncounterDAO encounterDAO = new EncounterDAO();
                 try {
@@ -758,7 +764,7 @@ public class VisitReceivedFragment extends Fragment {
                 } catch (DAOException e) {
                     e.printStackTrace();
                 }
-                if(!isPrescriptionReceived) continue;
+                if (!isPrescriptionReceived) continue;
                 String emergencyUuid = "";
                 EncounterDAO encounterDAO = new EncounterDAO();
                 try {
@@ -829,7 +835,7 @@ public class VisitReceivedFragment extends Fragment {
                 } catch (DAOException e) {
                     e.printStackTrace();
                 }
-                if(!isPrescriptionReceived) continue;
+                if (!isPrescriptionReceived) continue;
                 String emergencyUuid = "";
                 EncounterDAO encounterDAO = new EncounterDAO();
                 try {

@@ -82,6 +82,8 @@ import org.intelehealth.helpline.R;
 import org.intelehealth.helpline.activities.aboutus.AboutUsActivity;
 import org.intelehealth.helpline.activities.achievements.fragments.MyAchievementsFragment;
 import org.intelehealth.helpline.activities.callflow.CallRecordingsActivity;
+import org.intelehealth.helpline.activities.callflow.CallRecordingsNewActivity;
+import org.intelehealth.helpline.activities.callflow.MissedCallTypesActivity;
 import org.intelehealth.helpline.activities.callflow.NewMissedCallActivity;
 import org.intelehealth.helpline.activities.help.activities.HelpFragment_New;
 import org.intelehealth.helpline.activities.informativeVideos.fragments.InformativeVideosFragment_New;
@@ -916,13 +918,16 @@ public class HomeScreenActivity_New extends BaseActivity implements NetworkUtils
         } else if (itemId == R.id.menu_logout) {
             wantToLogoutFromApp(this, getResources().getString(R.string.menu_option_logout), getResources().getString(R.string.sure_to_logout), getResources().getString(R.string.yes), getResources().getString(R.string.no));
         } else if (itemId == R.id.menu_missed_calls) {
-            Intent i = new Intent(HomeScreenActivity_New.this, NewMissedCallActivity.class);
-            startActivity(i);
-        } else if (itemId == R.id.menu_call_recordings) {
-            Intent i = new Intent(HomeScreenActivity_New.this, CallRecordingsActivity.class);
-            startActivity(i);
-          /*  Intent i = new Intent(HomeScreenActivity_New.this, CallRecordingActivityNew.class);
+           /* Intent i = new Intent(HomeScreenActivity_New.this, NewMissedCallActivity.class);
             startActivity(i);*/
+            Intent i = new Intent(HomeScreenActivity_New.this, MissedCallTypesActivity.class);
+            startActivity(i);
+
+        } else if (itemId == R.id.menu_call_recordings) {
+           /* Intent i = new Intent(HomeScreenActivity_New.this, CallRecordingsActivity.class);
+            startActivity(i);*/
+            Intent i = new Intent(HomeScreenActivity_New.this, CallRecordingsNewActivity.class);
+            startActivity(i);
         }
         mDrawerLayout.closeDrawers();
 

@@ -48,7 +48,21 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute, LockedOrientationActivity"
         tools:replace="allowBackup">
-        <!--<activity
+        <activity
+            android:name=".activities.callflowjava.MissedCallsTabActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.callflow.MissedCallTypesActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.callflow.CallRecordingsNewActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <!--
+        <activity
             android:name=".activities.LogicNewActivity"
             android:exported="true">
             <intent-filter>
@@ -56,7 +70,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
+        </activity>
+        -->
         <activity
             android:name=".activities.callflow.NewMissedCallActivity"
             android:exported="false"
@@ -223,11 +238,11 @@
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
-              <intent-filter>
-                  <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                  <category android:name="android.intent.category.LAUNCHER" />
-              </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activities.notification.NotificationActivity"

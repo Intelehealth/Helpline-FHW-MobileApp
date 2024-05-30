@@ -19,9 +19,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
+import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +37,7 @@ import org.intelehealth.helpline.activities.onboarding.PrivacyPolicyActivity_New
 import org.intelehealth.helpline.app.IntelehealthApplication;
 import org.intelehealth.helpline.models.PrescriptionModel;
 import org.intelehealth.helpline.shared.BaseActivity;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.NetworkUtils;
 import org.intelehealth.helpline.utilities.SessionManager;
 
@@ -118,6 +121,8 @@ public class EndVisitActivity extends BaseActivity implements NetworkUtils.Inter
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recycler_older.setLayoutManager(layoutManager);
         searchview_received = findViewById(R.id.searchview_received);
+        EditText searchEditText = (EditText) searchview_received.findViewById(androidx.appcompat.R.id.search_src_text);
+        searchEditText.setFilters(new InputFilter[]{new AlphabetsInputFilter(Integer.MAX_VALUE, false)});
         closeButton = searchview_received.findViewById(androidx.appcompat.R.id.search_close_btn);
         no_patient_found_block = findViewById(R.id.no_patient_found_block);
         main_block = findViewById(R.id.main_block);
