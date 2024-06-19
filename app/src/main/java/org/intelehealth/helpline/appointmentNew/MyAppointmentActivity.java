@@ -142,6 +142,13 @@ public class MyAppointmentActivity extends BaseActivity implements UpdateAppoint
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(MyAppointmentActivity.this, HomeScreenActivity_New.class);
+        startActivity(intent);
+    }
+
     private void initUI() {
         View toolbar = findViewById(R.id.toolbar_my_appointments);
         TextView tvTitle = toolbar.findViewById(R.id.tv_screen_title_common);

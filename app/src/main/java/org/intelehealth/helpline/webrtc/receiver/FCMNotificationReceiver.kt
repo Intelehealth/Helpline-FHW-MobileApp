@@ -15,6 +15,8 @@ import org.intelehealth.helpline.utilities.OfflineLogin
 import org.intelehealth.helpline.utilities.SessionManager
 import org.intelehealth.fcm.FcmBroadcastReceiver
 import org.intelehealth.fcm.FcmNotification
+import org.intelehealth.helpline.app.AppConstants
+import org.intelehealth.helpline.appointmentNew.MyAppointmentActivity
 import org.intelehealth.klivekit.call.utils.CallHandlerUtils
 import org.intelehealth.klivekit.call.utils.CallMode
 import org.intelehealth.klivekit.call.utils.CallType
@@ -88,7 +90,14 @@ class FCMNotificationReceiver : FcmBroadcastReceiver() {
     private fun sendNotification(notification: RemoteMessage.Notification?, context: Context) {
         val messageTitle = notification!!.title
         val messageBody = notification.body
-        val notificationIntent = Intent(context, HomeScreenActivity_New::class.java)
+        val clickAction = notification.clickAction
+        var notificationIntent: Intent;
+        if(clickAction!!.isNotEmpty() && clickAction == AppConstants.NAVIGATE_TO_APPOINTMENT)
+            notificationIntent = Intent(context, MyAppointmentActivity::class.java)
+        else
+            notificationIntent = Intent(context, HomeScreenActivity_New::class.java)
+
+        //val notificationIntent = Intent(context, HomeScreenActivity_New::class.java)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             context,
