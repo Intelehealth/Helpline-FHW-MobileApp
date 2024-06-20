@@ -595,8 +595,7 @@ public class AppointmentDAO {
                     + "from tbl_patient p, tbl_appointments a "
                     + "where p.uuid = a.patient_id and new_slot_date "
                     + "BETWEEN '" + fromDate + "'  and '" + toDate + "' "
-                    + "AND a.status = 'booked'"
-                    + "AND datetime(a.slot_js_date) < datetime('now') "
+                    + "AND (a.status = 'completed' OR (a.status = 'booked'" + "AND datetime(a.slot_js_date) < datetime('now')))"
                     + "LIMIT ? OFFSET ?";
 
             idCursor = db.rawQuery(selectQuery, new String[]{String.valueOf(limit), String.valueOf(offset)});
@@ -607,8 +606,7 @@ public class AppointmentDAO {
                             + "from tbl_patient p, tbl_appointments a "
                             + "where p.uuid = a.patient_id "
                             + "AND a.slot_date != ?"
-                            + "AND a.status = 'booked'"
-                            + "AND datetime(a.slot_js_date) < datetime('now') "
+                            + "AND (a.status = 'completed' OR ( a.status = 'booked'" + "AND datetime(a.slot_js_date) < datetime('now'))) "
                             + "LIMIT ? OFFSET ?"
                     , new String[]{currentDate, String.valueOf(limit), String.valueOf(offset)});
 
@@ -685,6 +683,15 @@ public class AppointmentDAO {
                             + "AND datetime(a.slot_js_date) < datetime('now') "
                             + "LIMIT ? OFFSET ?"
                     , null);
+            String query = "select p.patient_photo, p.first_name || ' ' || p.last_name as patient_name_new, p.openmrs_id, p.date_of_birth, p.gender, a.uuid, \"\n" +
+                    "                            + \"a.appointment_id,a.slot_date, a.slot_day, a.slot_duration,a.slot_duration_unit, a.slot_time, a.speciality, a.user_uuid, a.dr_name, a.visit_uuid, \"\n" +
+                    "                            + \"a.patient_id, a.created_at, a.updated_at, a.status, a.visit_uuid, a.open_mrs_id \"\n" +
+                    "                            + \"from tbl_patient p, tbl_appointments a \"\n" +
+                    "                            + \"where p.uuid = a.patient_id \"\n" +
+                    "                            + \"AND a.status = 'booked'\"\n" +
+                    "                            + \"AND datetime(a.slot_js_date) < datetime('now') ";
+            Log.d(TAG, "getAllCompletedAppointmentsWithFilters: query : " + query);
+
 
         }
         EncounterDAO encounterDAO = new EncounterDAO();
@@ -1530,10 +1537,19 @@ public class AppointmentDAO {
                         + "FROM tbl_patient p, tbl_appointments a "
                         + "WHERE p.uuid = a.patient_id "
                         + "AND a.slot_date = '" + currentDate + "'"
-                        + "AND a.status = 'booked'"
-                        + "AND datetime(a.slot_js_date) < datetime('now') "
+                        + "AND( a.status = 'completed' OR (a.status = 'booked'" + "AND datetime(a.slot_js_date) < datetime('now'))) "
                         + "LIMIT ? OFFSET ?"
                 , new String[]{String.valueOf(limit), String.valueOf(offset)});
+
+        String query = "SELECT p.patient_photo, p.first_name || ' ' || p.last_name AS patient_name_new, p.openmrs_id, p.date_of_birth, p.gender, a.uuid, \"\n" +
+                "                        + \"a.appointment_id,a.slot_date, a.slot_day, a.slot_duration,a.slot_duration_unit, a.slot_time, a.speciality, a.user_uuid, a.dr_name, a.visit_uuid, a.patient_id, \"\n" +
+                "                        + \"a.created_at, a.updated_at, a.status, a.visit_uuid, a.open_mrs_id \"\n" +
+                "                        + \"FROM tbl_patient p, tbl_appointments a \"\n" +
+                "                        + \"WHERE p.uuid = a.patient_id \"\n" +
+                "                        + \"AND a.slot_date = '\" + currentDate + \"'\"\n" +
+                "                        + \"AND a.status = 'booked'\"\n" +
+                "                        + \"AND datetime(a.slot_js_date) < datetime('now')";
+        Log.d(TAG, "getCompletedAppointmentsForToday: query : " + query);
 
         EncounterDAO encounterDAO = new EncounterDAO();
 
