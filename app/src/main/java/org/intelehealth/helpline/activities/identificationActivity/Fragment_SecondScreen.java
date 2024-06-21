@@ -46,6 +46,8 @@ import org.intelehealth.helpline.database.dao.PatientsDAO;
 import org.intelehealth.helpline.database.dao.SyncDAO;
 import org.intelehealth.helpline.models.dto.PatientAttributesDTO;
 import org.intelehealth.helpline.models.dto.PatientDTO;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
+import org.intelehealth.helpline.ui2.validations.UpperCaseAlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.FileUtils;
 import org.intelehealth.helpline.utilities.Logger;
 import org.intelehealth.helpline.utilities.NetworkConnection;
@@ -140,11 +142,15 @@ public class Fragment_SecondScreen extends Fragment {
         mDistrictET = view.findViewById(R.id.district_edittext);
         mCityVillageET = view.findViewById(R.id.city_village_edittext);
 //        mCityVillageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        mCityVillageET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50), inputFilter_Others}); //maxlength 50
+        //mCityVillageET.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50), inputFilter_Others}); //maxlength 50
+        AlphabetsInputFilter inputFilter = new AlphabetsInputFilter(50,true);
+        mCityVillageET.setFilters(new InputFilter[]{inputFilter});
         mAddress1EditText = view.findViewById(R.id.address1_edittext);
-        mAddress1EditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)}); //maxlength 50
+        //mAddress1EditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)}); //maxlength 50
+        mAddress1EditText.setFilters(new InputFilter[]{inputFilter});
         mAddress2EditText = view.findViewById(R.id.address2_edittext);
-        mAddress2EditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)}); //maxlength 50
+        mAddress2EditText.setFilters(new InputFilter[]{inputFilter});
+        //mAddress2EditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)}); //maxlength 50
         mPostalCodeErrorTextView = view.findViewById(R.id.postalcode_error);
         mCountryNameErrorTextView = view.findViewById(R.id.country_error);
         mStateNameErrorTextView = view.findViewById(R.id.state_error);

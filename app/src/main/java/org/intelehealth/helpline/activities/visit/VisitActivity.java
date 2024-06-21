@@ -27,6 +27,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.intelehealth.helpline.R;
 import org.intelehealth.helpline.activities.homeActivity.HomeScreenActivity_New;
 import org.intelehealth.helpline.app.AppConstants;
+import org.intelehealth.helpline.database.dao.VisitsDAO;
 import org.intelehealth.helpline.shared.BaseActivity;
 import org.intelehealth.helpline.syncModule.SyncUtils;
 import org.intelehealth.helpline.utilities.NetworkConnection;
@@ -35,6 +36,8 @@ import org.intelehealth.helpline.utilities.SessionManager;
 import org.intelehealth.helpline.utilities.VisitCountInterface;
 
 import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.Executors;
 
 /**
  * Created by: Prajwal Waingankar On: 2/Nov/2022
@@ -165,7 +168,7 @@ public class VisitActivity extends BaseActivity implements
             Locale.setDefault(locale);
             Configuration config = new Configuration();
             config.locale = locale;
-            getResources().updateConfiguration(config,getResources().getDisplayMetrics());
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
         }
     }
 
@@ -200,13 +203,15 @@ public class VisitActivity extends BaseActivity implements
     @Override
     public void receivedCount(int count) {
         Log.v(TAG, "receivedCount: " + count);
-        tabLayout.getTabAt(0).setText(getResources().getString(R.string.received));
+        //tabLayout.getTabAt(0).setText(getResources().getString(R.string.received));
+        updateCounts(true);
     }
 
     @Override
     public void pendingCount(int count) {
         Log.v(TAG, "pendingCount: " + count);
-        tabLayout.getTabAt(1).setText(getResources().getString(R.string.pending));
+        // tabLayout.getTabAt(1).setText(getResources().getString(R.string.pending));
+        updateCounts(false);
     }
 
     public void syncNow(View view) {
@@ -215,5 +220,21 @@ public class VisitActivity extends BaseActivity implements
             refresh.clearAnimation();
             syncAnimator.start();
         }
+    }
+
+    private void updateCounts(boolean isForReceivedPrescription) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int count = new VisitsDAO().getVisitCountsByStatus(isForReceivedPrescription);
+            runOnUiThread(() -> {
+                if (isForReceivedPrescription) {
+                    Objects.requireNonNull(tabLayout.getTabAt(0)).setText(getResources().getString(R.string.received) + "\t(" + count + ")");
+                    Log.d(TAG, "updateCounts: received : " + count);
+                } else {
+                    Objects.requireNonNull(tabLayout.getTabAt(1)).setText(getResources().getString(R.string.pending) + "\t(" + count + ")");
+                    Log.d(TAG, "updateCounts: pending : " + count);
+                }
+            });
+
+        });
     }
 }

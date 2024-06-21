@@ -23,6 +23,8 @@ import org.intelehealth.helpline.R;
 import org.intelehealth.helpline.activities.callflow.adapter.CallRecordingsAdapter;
 import org.intelehealth.helpline.activities.callflow.models.CallFlowResponseData;
 import org.intelehealth.helpline.activities.callflow.models.CallFlowResponseModelClass;
+import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseDataModel;
+import org.intelehealth.helpline.activities.callflow.models.MissedCallsResponseModel;
 import org.intelehealth.helpline.activities.homeActivity.HomeScreenActivity_New;
 import org.intelehealth.helpline.app.AppConstants;
 import org.intelehealth.helpline.databinding.ActivityCallRecordingBinding;
@@ -46,7 +48,7 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
     private ObjectAnimator syncAnimator;
     private SessionManager sessionManager;
     private ActivityCallRecordingBinding binding;
-    private List<CallFlowResponseData> dataList;
+    private List<MissedCallsResponseDataModel> dataList;
     private int pageNumber = 0; // Initial page number
     CallRecordingsAdapter recordedCallsAdapter;
     private boolean isLastPage = false;
@@ -177,7 +179,7 @@ public class CallRecordingsActivity extends AppCompatActivity implements Network
 
     }
 
-    private void updateDataInView(List<CallFlowResponseData> data) {
+    private void updateDataInView(List<MissedCallsResponseDataModel> data) {
         dataList.addAll(data);
         recordedCallsAdapter.notifyDataSetChanged();
         pageNumber++; // Increment page number for next call

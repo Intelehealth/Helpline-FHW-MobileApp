@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.LocaleList;
 import android.os.StrictMode;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -40,6 +41,7 @@ import org.intelehealth.helpline.app.AppConstants;
 import org.intelehealth.helpline.app.IntelehealthApplication;
 import org.intelehealth.helpline.models.loginModel.LoginModel;
 import org.intelehealth.helpline.models.loginProviderModel.LoginProviderModel;
+import org.intelehealth.helpline.ui2.validations.AlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.Base64Utils;
 import org.intelehealth.helpline.utilities.DialogUtils;
 import org.intelehealth.helpline.utilities.Logger;
@@ -106,7 +108,8 @@ public class LoginActivityNew extends AppCompatActivity {
 
         etUsername = findViewById(R.id.et_username_login);
         etPassword = findViewById(R.id.et_password_login);
-
+        AlphabetsInputFilter alphabetsInputFilter = new AlphabetsInputFilter();
+        etUsername.setFilters(new InputFilter[]{alphabetsInputFilter});
         textviewPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

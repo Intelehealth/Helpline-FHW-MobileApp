@@ -1895,5 +1895,10 @@ The disclosure of personal information to third parties shall be only for identi
     <string name="please_enter_here">Please enter here</string>
     <string name="request_failed">Request failed</string>
     <string name="sms_sent">SMS sent successfully</string>
+    <string-array name="call_types">
+        <item>Incoming</item>
+        <item>Outgoing</item>
+    </string-array>
+    <string name="no_data_message">No record for\n%1$s</string>
 
 </resources>

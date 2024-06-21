@@ -57,6 +57,7 @@ import org.intelehealth.helpline.models.dto.PatientAttributesDTO;
 import org.intelehealth.helpline.models.dto.PatientDTO;
 import org.intelehealth.helpline.ui2.calendarviewcustom.CustomCalendarViewUI2;
 import org.intelehealth.helpline.ui2.calendarviewcustom.SendSelectedDateInterface;
+import org.intelehealth.helpline.ui2.validations.UpperCaseAlphabetsInputFilter;
 import org.intelehealth.helpline.utilities.DateAndTimeUtils;
 import org.intelehealth.helpline.utilities.EditTextUtils;
 import org.intelehealth.helpline.utilities.IReturnValues;
@@ -150,11 +151,15 @@ public class Fragment_FirstScreen extends Fragment implements SendSelectedDateIn
         address_icon = getActivity().findViewById(R.id.addresslocation_icon);
         other_icon = getActivity().findViewById(R.id.other_icon);
         mFirstNameEditText = view.findViewById(R.id.firstname_edittext);
-        mFirstNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25  // IDA4-1344
+        //mFirstNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25  // IDA4-1344
         mMiddleNameEditText = view.findViewById(R.id.middlename_edittext);
-        mMiddleNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25  // IDA4-1344
+        //mMiddleNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25  // IDA4-1344
         mLastNameEditText = view.findViewById(R.id.lastname_edittext);
-        mLastNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25  // IDA4-1344
+        //mLastNameEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25), inputFilter_Others}); //maxlength 25  // IDA4-1344
+        UpperCaseAlphabetsInputFilter inputFilter = new UpperCaseAlphabetsInputFilter();
+        mFirstNameEditText.setFilters(new InputFilter[]{inputFilter});
+        mMiddleNameEditText.setFilters(new InputFilter[]{inputFilter});
+        mLastNameEditText.setFilters(new InputFilter[]{inputFilter});
         mGenderMaleRadioButton = view.findViewById(R.id.gender_male);
         mGenderFemaleRadioButton = view.findViewById(R.id.gender_female);
         mGenderOthersRadioButton = view.findViewById(R.id.gender_other);
