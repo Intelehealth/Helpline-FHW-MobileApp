@@ -215,6 +215,7 @@ public class AppConstants {
 
     public static InteleHealthDatabaseHelper inteleHealthDatabaseHelper = new InteleHealthDatabaseHelper(IntelehealthApplication.getAppContext());
 
+    public static final String NAVIGATE_TO_APPOINTMENT = "FCM_PLUGIN_APPOINTMENT_ACTIVITY";
 
 }
 

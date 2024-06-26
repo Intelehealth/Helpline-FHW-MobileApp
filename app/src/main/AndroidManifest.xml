@@ -212,7 +212,13 @@
             android:name=".appointmentNew.MyAppointmentActivity"
             android:exported="true"
             android:theme="@style/AppThemeMaterialNew"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="FCM_PLUGIN_APPOINTMENT_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.help.activities.ChatSupportHelpActivity_New"
             android:exported="true"

@@ -163,9 +163,10 @@ public class PhysicalExaminationFragment extends Fragment {
                         mActionListener.onProgress((int) 100 / physicalExam.getTotalNumberOfExams());
                         // }
                     } else {
-                        if (!mIsEditMode)
+                        if (!mIsEditMode) {
+                            mActionListener.onProgress(100);
                             mActionListener.onFormSubmitted(VisitCreationActivity.STEP_3_PHYSICAL_SUMMARY_EXAMINATION, mIsEditMode, null);
-                        else
+                        } else
                             Toast.makeText(requireActivity(), getString(R.string.please_submit_to_proceed_next_step), Toast.LENGTH_SHORT).show();
                     }
                     if (!mIsEditMode)
