@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.intelehealth.helpline.R;
 
 public class AboutUsAdapter extends RecyclerView.Adapter<AboutUsAdapter.MyViewHolder> {
-    private Context context;
+    private final Context context;
 
     public AboutUsAdapter(Context context) {
         this.context = context;
