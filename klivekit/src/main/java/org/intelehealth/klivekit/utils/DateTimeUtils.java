@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +33,7 @@ public class DateTimeUtils {
     public static final String YYYY_MM_DD_WITH_SPLASH = "dd/MM/yyyy";
 
     public static final String CALL_LOG_TIME_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
+
     @SuppressLint("SimpleDateFormat")
     public static SimpleDateFormat getSimpleDateFormat(String format, TimeZone timeZone) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -129,5 +131,22 @@ public class DateTimeUtils {
 
     public static TimeZone getUTCTimeZone() {
         return TimeZone.getTimeZone(TIME_ZONE_UTC);
+    }
+
+    public static String convertDateToDisplayFormatInCall(String dateTime) {
+        if (dateTime == null || dateTime.isEmpty())
+            return "";
+        String outputTime = "";
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMMM, 'at' hh:mm a", Locale.ENGLISH);
+
+        try {
+            Date date = inputFormat.parse(dateTime);
+            outputTime = outputFormat.format(date);
+            System.out.println(outputTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return outputTime;
     }
 }

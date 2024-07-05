@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding_parent"
+    tools:context=".activities.callflow.CallRecordingsActivity">
+
+    <include
+        android:id="@+id/toolbar_recordings"
+        layout="@layout/layout_toolbar_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/screen_container_padding" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recorded_calls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_recordings"
+        android:layout_marginHorizontal="@dimen/screen_container_padding"
+        android:layout_marginTop="@dimen/iv_row_call_icons"
+        android:layout_marginBottom="@dimen/screen_padding"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="3"
+        tools:listitem="@layout/row_call_functionality_layout" />
+
+    <TextView
+        android:id="@+id/nodata_recordings"
+        style="@style/text_title_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:padding="@dimen/card_padding"
+        android:text="@string/no_data_found"
+        android:textAppearance="@style/caption"
+        android:textColor="@null"
+        android:visibility="gone" />
+    <!--<ProgressBar
+        android:id="@+id/progressBar_recording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />-->
+    <include
+        android:id="@+id/layout_loader"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        layout="@layout/load_more_progressbar" />
+</RelativeLayout>
